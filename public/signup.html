@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Criar conta" />
+    <title>Cadastro — Alivie</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page-auth">
+    <header class="site-header">
+      <div class="container">
+        <a class="logo" href="index.html">Alivie</a>
+        <nav class="nav" aria-label="Principal">
+          <ul class="nav-links">
+            <li><a href="index.html#inicio">Início</a></li>
+            <li><a href="index.html#sobre">Sobre</a></li>
+            <li><a href="comece-agora.html">Comece agora</a></li>
+          </ul>
+          <div class="nav-auth" id="nav-auth"></div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="auth-main">
+      <div class="auth-card auth-card--wide">
+        <h1 class="auth-title">Criar conta</h1>
+        <p class="auth-sub">Cadastre-se com e-mail e senha.</p>
+
+        <form id="signup-form" class="auth-form" novalidate>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              autocomplete="email"
+              inputmode="email"
+            />
+          </div>
+          <div class="field">
+            <label for="password">Senha</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              minlength="6"
+              autocomplete="new-password"
+            />
+          </div>
+          <div class="field">
+            <label for="confirm">Confirmar senha</label>
+            <input
+              type="password"
+              id="confirm"
+              name="confirm"
+              required
+              minlength="6"
+              autocomplete="new-password"
+            />
+          </div>
+          <p id="signup-error" class="form-error" role="alert" hidden></p>
+          <button type="submit" class="btn btn-primary btn-block">
+            Cadastrar
+          </button>
+        </form>
+
+        <p class="auth-switch">
+          Já tem conta? <a href="login.html">Entrar</a>
+        </p>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; <span id="year"></span> Alivie</p>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

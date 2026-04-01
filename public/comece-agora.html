@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Comece sua jornada na Alivie: rotinas, dicas e plano personalizado."
+    />
+    <title>Comece agora — Alivie</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page-comece">
+    <header class="site-header">
+      <div class="container">
+        <a class="logo" href="index.html">Alivie</a>
+        <nav class="nav" aria-label="Principal">
+          <ul class="nav-links">
+            <li><a href="index.html#inicio">Início</a></li>
+            <li><a href="index.html#sobre">Sobre</a></li>
+            <li>
+              <a href="comece-agora.html" aria-current="page">Comece agora</a>
+            </li>
+          </ul>
+          <div class="nav-auth" id="nav-auth"></div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="comece-main">
+      <div class="container container--wide">
+        <header class="comece-hero">
+          <p class="section-sobre__eyebrow">Seu primeiro passo</p>
+          <h1 class="comece-hero__title">Comece agora</h1>
+          <p class="comece-hero__lead">
+            Em poucos minutos você pode organizar sua rotina e receber
+            recomendações pensadas para quem trabalha muito e precisa de
+            cuidado realista com mente e corpo.
+          </p>
+        </header>
+
+        <ol class="comece-steps">
+          <li class="comece-step">
+            <span class="comece-step__num" aria-hidden="true">1</span>
+            <div class="comece-step__body">
+              <h2 class="comece-step__title">Conte como é o seu dia</h2>
+              <p class="comece-step__text">
+                Responda um questionário sobre rotina, sono, trabalho e o que
+                você quer melhorar. Sem julgamento — só o que importa para te
+                ajudar.
+              </p>
+              <div class="comece-step__action" id="comece-formulario-entry" hidden>
+                <button type="button" class="btn btn-primary js-open-formulario">
+                  Começar Formulário
+                </button>
+              </div>
+            </div>
+          </li>
+          <li class="comece-step">
+            <span class="comece-step__num" aria-hidden="true">2</span>
+            <div class="comece-step__body">
+              <h2 class="comece-step__title">Receba um plano de ação</h2>
+              <p class="comece-step__text">
+                Com base nas suas respostas, montamos sugestões de hábitos,
+                pausas e lembretes que cabem na sua agenda — inclusive nos dias
+                mais corridos.
+              </p>
+            </div>
+          </li>
+          <li class="comece-step">
+            <span class="comece-step__num" aria-hidden="true">3</span>
+            <div class="comece-step__body">
+              <h2 class="comece-step__title">Acompanhe e ajuste</h2>
+              <p class="comece-step__text">
+                Volte quando quiser para atualizar sua rotina e ver novas dicas
+                e recomendações alinhadas ao que você precisa agora.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="comece-panel" id="comece-panel-guest">
+          <p class="comece-panel__text">
+            Crie uma conta gratuita para salvar seu progresso e acessar tudo em
+            qualquer dispositivo. Já tem cadastro? Entre e continue de onde
+            parou.
+          </p>
+          <div class="comece-panel__actions">
+            <a class="btn btn-primary" href="signup.html">Criar conta</a>
+            <a class="btn btn-ghost" href="login.html">Entrar</a>
+          </div>
+        </div>
+
+        <p class="comece-back">
+          <a class="nav-back" href="index.html">← Voltar ao início</a>
+        </p>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; <span id="year"></span> Alivie</p>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="formulario.js"></script>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Descrição do site" />
+    <title>Alivie</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <a class="logo" href="index.html">Alivie</a>
+        <nav class="nav" aria-label="Principal">
+          <ul class="nav-links">
+            <li><a href="#inicio">Início</a></li>
+            <li><a href="#sobre">Sobre</a></li>
+            <li><a href="comece-agora.html">Comece agora</a></li>
+          </ul>
+          <div class="nav-auth" id="nav-auth"></div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="inicio">
+      <div class="container container--wide">
+        <section class="hero" aria-labelledby="titulo-principal">
+          <h1 id="titulo-principal">Saúde mental e física, acessível para todos</h1>
+          <p class="lead">A Alivie é uma plataforma de auxilio, cuidados e rotina para a saúde mental e física, com um plano de ação personalizado para cada usuário.</p>
+          <p id="auth-welcome" class="auth-welcome" hidden></p>
+          <div class="formulario-entry" id="formulario-entry" hidden>
+            <button type="button" class="btn btn-primary js-open-formulario">
+              Começar Formulário
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <section
+        id="sobre"
+        class="section-sobre"
+        aria-labelledby="titulo-sobre"
+      >
+        <div class="container container--wide">
+          <header class="section-sobre__head">
+            <p class="section-sobre__eyebrow">Quem é a Alivie?</p>
+            <h2 id="titulo-sobre">Sobre a Alivie</h2>
+            <p class="section-sobre__intro">
+              A Alivie é uma iniciativa de um grupo de amigos que se uniram para criar uma plataforma de auxilio e de rotina e cuidados para a saúde mental e física.
+            </p>
+          </header>
+
+          <div class="about-grid">
+            <article class="about-card">
+              <span class="about-card__icon" aria-hidden="true">◇</span>
+              <h3 class="about-card__title">Missão</h3>
+              <p class="about-card__text">
+                Facilitar o dia a dia das pessoas com ferramentas simples,
+                acessíveis e confiáveis para o bem-estar mental e físico.
+              </p>
+            </article>
+            <article class="about-card">
+              <span class="about-card__icon" aria-hidden="true">○</span>
+              <h3 class="about-card__title">Visão</h3>
+              <p class="about-card__text">
+                Ser referência em qualidade e atenção ao detalhe no que
+                construímos, para que as pessoas possam ter um dia a dia mais saudável e feliz.
+              </p> 
+            </article>
+            <article class="about-card">
+              <span class="about-card__icon" aria-hidden="true">△</span>
+              <h3 class="about-card__title">Valores</h3>
+              <p class="about-card__text">
+                Transparência, responsabilidade e melhoria contínua em cada
+                analise e melhoria.
+              </p>
+            </article>
+          </div>
+
+          <div class="about-split">
+            <div class="about-split__text">
+              <h3 class="about-split__title">Como trabalhamos</h3>
+              <p>
+                Começamos com um questionário sobre a rotina, os cuidados e os auxílios que o usuário precisa. Em seguida, criamos um plano de ação para ajudar a pessoa a alcançar seus objetivos.
+              </p>
+            </div>
+            <ul class="about-checklist">
+              <li>Questionário de rotina, cuidados e auxílios</li>
+              <li>Plano de ação para ajudar a pessoa a alcançar seus objetivos</li>
+              <li>Atualizações e melhorias em todos os momentos</li>
+              <li>a plataforma é totalmente gratuita e open source</li>
+            </ul>
+          </div>
+
+          <div class="about-cta">
+            <p class="about-cta__text">
+              Quer saber mais? Entre em contato com a gente pelo e-mail:
+              <a href="mailto:contato@alivie.com">contato@alivie.com</a>
+              ou pelo WhatsApp:
+              <a href="https://wa.me/5511999999999">+55 11 99999-9999</a>
+            </p>
+            <a class="btn btn-primary" href="#inicio">Voltar ao início</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; <span id="year"></span> Alivie</p>
+      </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="formulario.js"></script>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
