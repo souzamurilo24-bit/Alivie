@@ -84,7 +84,12 @@
       '<textarea id="f-obs" name="observacoes" rows="3" maxlength="8000"></textarea>' +
       "</div>" +
       '<div id="formulario-prompt-wrap" class="modal-prompt-wrap" role="region" aria-label="Prompt condensado">' +
+      '<div class="modal-prompt-header">' +
       '<h3 class="modal-prompt-title">Prompt condensado</h3>' +
+      '<button type="button" class="btn-copy" id="btn-copy-prompt" title="Copiar prompt">' +
+      '<i class="fas fa-copy"></i> Copiar' +
+      '</button>' +
+      '</div>' +
       '<p class="modal-prompt-hint">Somente leitura. Aparece aqui ao salvar o formulário.</p>' +
       '<div class="modal-prompt-readonly">' +
       '<pre id="formulario-prompt-text" class="modal-prompt-text modal-prompt-text--placeholder" contenteditable="false" aria-label="Prompt condensado, somente leitura"></pre>' +
@@ -110,6 +115,31 @@
       form.addEventListener("submit", onSubmitForm);
     }
 
+    // Copy button functionality
+    var copyBtn = document.getElementById("btn-copy-prompt");
+    if (copyBtn) {
+      copyBtn.addEventListener("click", function() {
+        var pre = document.getElementById("formulario-prompt-text");
+        if (pre && pre.textContent && !pre.classList.contains("modal-prompt-text--placeholder")) {
+          navigator.clipboard.writeText(pre.textContent).then(function() {
+            // Visual feedback
+            var originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+            copyBtn.classList.add("btn-copy--success");
+            setTimeout(function() {
+              copyBtn.innerHTML = originalHTML;
+              copyBtn.classList.remove("btn-copy--success");
+            }, 2000);
+          }).catch(function(err) {
+            console.error("Failed to copy:", err);
+            showMsg("Erro ao copiar. Tente selecionar e copiar manualmente.");
+          });
+        } else {
+          showMsg("Salve o formulário primeiro para gerar o prompt.");
+        }
+      });
+    }
+
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && modalEl && !modalEl.hidden) {
         closeModal();
@@ -120,18 +150,51 @@
   var PLACEHOLDER_PROMPT =
     "Nenhum prompt salvo ainda. Preencha os campos acima e clique em Salvar formulário para gerar o prompt condensado."
 
+  var routineOptions = {
+    "relaxamento": "Relaxamento",
+    "produtividade": "Produtividade",
+    "bem-estar-fisico": "Bem-estar Físico",
+    "sono-melhorado": "Sono Melhorado",
+    "reducao-ansiedade": "Redução de Ansiedade",
+    "autoconhecimento": "Autoconhecimento",
+    "energia-vitalidade": "Energia e Vitalidade",
+    "equilibrio-emocional": "Equilíbrio Emocional"
+  };
+
   function updatePromptPreview(text) {
     var wrap = document.getElementById("formulario-prompt-wrap");
     var pre = document.getElementById("formulario-prompt-text");
     if (!wrap || !pre) return;
     var s = text != null ? String(text).trim() : "";
-    if (s) {
-      pre.textContent = s;
-      pre.classList.remove("modal-prompt-text--placeholder");
-    } else {
-      pre.textContent = PLACEHOLDER_PROMPT;
-      pre.classList.add("modal-prompt-text--placeholder");
+    
+    // Fetch routine focus from server API
+    var routineFocusText = "";
+    
+    function displayPrompt() {
+      if (s) {
+        pre.textContent = s + routineFocusText;
+        pre.classList.remove("modal-prompt-text--placeholder");
+      } else {
+        pre.textContent = PLACEHOLDER_PROMPT;
+        pre.classList.add("modal-prompt-text--placeholder");
+      }
     }
+    
+    // Try to fetch from server
+    api("/api/profile", { method: "GET" })
+      .then(function(res) {
+        if (res.ok && res.body && res.body.profile && res.body.profile.routineFocus) {
+          var routineFocus = res.body.profile.routineFocus;
+          var routineLabel = routineOptions[routineFocus] || routineFocus;
+          var allOptions = Object.values(routineOptions).join(", ");
+          routineFocusText = "\n\nfoco da rotina: entre " + allOptions + ", escolhida: " + routineLabel;
+        }
+        displayPrompt();
+      })
+      .catch(function(err) {
+        console.error("Error fetching profile from server:", err);
+        displayPrompt();
+      });
   }
 
   function fillForm(data) {

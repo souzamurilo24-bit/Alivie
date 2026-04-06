@@ -19,6 +19,7 @@ const COOKIE_OPTIONS = {
 const DATA_DIR = path.join(__dirname, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const FORMULARIOS_FILE = path.join(DATA_DIR, "formularios.json");
+const PROFILES_FILE = path.join(DATA_DIR, "profiles.json");
 
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -58,6 +59,29 @@ function loadFormularios() {
 function saveFormularios(map) {
   ensureDataDir();
   fs.writeFileSync(FORMULARIOS_FILE, JSON.stringify(map, null, 2), "utf8");
+}
+
+function loadProfiles() {
+  ensureDataDir();
+  if (!fs.existsSync(PROFILES_FILE)) {
+    return {};
+  }
+  try {
+    return JSON.parse(fs.readFileSync(PROFILES_FILE, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+function saveProfiles(map) {
+  try {
+    ensureDataDir();
+    fs.writeFileSync(PROFILES_FILE, JSON.stringify(map, null, 2), "utf8");
+    console.log("Profiles saved successfully to", PROFILES_FILE);
+  } catch (err) {
+    console.error("Error saving profiles:", err);
+    throw err;
+  }
 }
 
 function getUserIdFromToken(req) {
@@ -237,6 +261,58 @@ app.put("/api/formulario", (req, res) => {
     promptCondensado,
     atualizadoEm: map[userId].atualizadoEm,
   });
+});
+
+// Profile endpoints - stored by user ID, linked to email
+const PROFILE_KEYS = ["fullName", "username", "routineFocus", "theme"];
+
+app.get("/api/profile", (req, res) => {
+  const userId = getUserIdFromToken(req);
+  if (!userId) {
+    return res.status(401).json({ error: "Não autorizado." });
+  }
+  const map = loadProfiles();
+  const saved = map[userId] || {};
+  const profile = {};
+  PROFILE_KEYS.forEach(function (k) {
+    profile[k] =
+      saved[k] != null && typeof saved[k] === "string" ? saved[k] : "";
+  });
+  res.json({ profile, atualizadoEm: saved.atualizadoEm || null });
+});
+
+app.post("/api/profile", (req, res) => {
+  try {
+    const userId = getUserIdFromToken(req);
+    console.log("POST /api/profile - userId:", userId);
+    if (!userId) {
+      console.log("POST /api/profile - Unauthorized: no userId");
+      return res.status(401).json({ error: "Não autorizado." });
+    }
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    console.log("POST /api/profile - body:", body);
+    const profile = {};
+    PROFILE_KEYS.forEach(function (k) {
+      const v = body[k];
+      profile[k] =
+        v != null && typeof v === "string" ? String(v).slice(0, 4000) : "";
+    });
+    console.log("POST /api/profile - profile:", profile);
+    const map = loadProfiles();
+    map[userId] = Object.assign({}, profile, {
+      atualizadoEm: new Date().toISOString(),
+    });
+    saveProfiles(map);
+    console.log("POST /api/profile - saved successfully");
+    res.json({
+      ok: true,
+      profile,
+      atualizadoEm: map[userId].atualizadoEm,
+    });
+  } catch (err) {
+    console.error("POST /api/profile - Error:", err);
+    res.status(500).json({ error: "Erro interno do servidor." });
+  }
 });
 
 app.use(express.static(path.join(__dirname, "public")));

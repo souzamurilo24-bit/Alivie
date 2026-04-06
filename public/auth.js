@@ -101,6 +101,23 @@
     }
   }
 
+  function updateProfileLinkVisibility() {
+    var session = getSession();
+    var profileLinks = document.querySelectorAll('a[href="perfil.html"]');
+    
+    profileLinks.forEach(function(link) {
+      if (session && session.email) {
+        // User is logged in, show profile link
+        link.style.display = "";
+        link.removeAttribute("hidden");
+      } else {
+        // User is not logged in, hide profile link
+        link.style.display = "none";
+        link.setAttribute("hidden", "true");
+      }
+    });
+  }
+
   function updateWelcomeBanner() {
     var el = document.getElementById("auth-welcome");
     if (!el) return;
@@ -231,6 +248,8 @@
   }
 
   window.Auth = {
+    api: api,
+    fetchSession: fetchSession,
     getSession: getSession,
     logout: logout,
     renderHeader: renderHeader,
@@ -244,6 +263,7 @@
       }
       updateWelcomeBanner();
       updateComeceGuestPanel();
+      updateProfileLinkVisibility();
       initLoginPage();
       initSignupPage();
       if (typeof initFormulario === "function") {
