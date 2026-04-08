@@ -9,7 +9,7 @@
     />
     <title>Comece agora — Alivie</title>
     <link rel="stylesheet" href="styles.css" />
-    <script src="theme.js"></script>
+    <script type="module" src="theme.js"></script>
   </head>
   <body class="page-comece">
     <header class="site-header">
@@ -102,8 +102,23 @@
       </div>
     </footer>
 
-    <script src="auth.js"></script>
-    <script src="formulario.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+      const firebaseConfig = {
+        apiKey: "AIzaSyB-5M4PBd-t3nNtp6bMkRnKT2TJDKfCC3k",
+        authDomain: "alivie-project.firebaseapp.com",
+        projectId: "alivie-project",
+        storageBucket: "alivie-project.firebasestorage.app",
+        messagingSenderId: "263866194556",
+        appId: "1:263866194556:web:6f1e05e43ec173aa0c87f9",
+        measurementId: "G-QRY40YC97E"
+      };
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+    </script>
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="formulario.js"></script>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>

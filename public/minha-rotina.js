@@ -1,54 +1,52 @@
-// Minha Rotina - Dynamic Routine Generation
-(function() {
-  // Activity database organized by time of day
+// Minha Rotina - Versão aprimorada e determinística
+(function () {
+  'use strict';
+
+  // Base de atividades por período
   const activitiesDB = {
     manha: [
-      // Light activities for low energy
-      { id: 'm1', title: 'Alongamento suave', duration: '5 min', type: 'movimento', energy: 'low', icon: 'fa-child', description: 'Estique os braços e pernas ainda na cama, respire fundo.' },
-      { id: 'm2', title: 'Hidratação matinal', duration: '2 min', type: 'saude', energy: 'low', icon: 'fa-glass-water', description: 'Beba um copo de água para acordar seu corpo suavemente.' },
-      { id: 'm3', title: 'Respiro consciente', duration: '3 min', type: 'mental', energy: 'low', icon: 'fa-wind', description: '3 respirações profundas, inspirando por 4 segundos e expirando por 6.' },
-      { id: 'm4', title: 'Café da manhã tranquilo', duration: '15 min', type: 'saude', energy: 'low', icon: 'fa-mug-hot', description: 'Coma sem pressa, saboreando cada pedacinho.' },
-      { id: 'm5', title: 'Pausa para café', duration: '10 min', type: 'pausa', energy: 'low', icon: 'fa-coffee', description: 'Um momento de calma antes de começar o dia.' },
-      // Medium activities for moderate energy
-      { id: 'm6', title: 'Caminhada leve', duration: '15 min', type: 'movimento', energy: 'medium', icon: 'fa-walking', description: 'Uma volta no quarteirão ou subida e descida de escadas.' },
-      { id: 'm7', title: 'Yoga matinal', duration: '10 min', type: 'movimento', energy: 'medium', icon: 'fa-spa', description: 'Posturas simples para despertar o corpo com gentileza.' },
-      { id: 'm8', title: 'Meditação guiada', duration: '10 min', type: 'mental', energy: 'medium', icon: 'fa-om', description: 'Momento de silêncio para começar o dia com clareza.' },
-      { id: 'm9', title: 'Preparação organizada', duration: '10 min', type: 'disciplina', energy: 'medium', icon: 'fa-clipboard-check', description: 'Organize o que precisa ser feito hoje, sem pressa.' },
-      // Higher energy activities
-      { id: 'm10', title: 'Exercício rápido', duration: '20 min', type: 'movimento', energy: 'high', icon: 'fa-running', description: 'Polichinelos, agachamentos leves, flexões na parede.' },
+      { id: 'm1', title: 'Alongamento suave', duration: '5 min', type: 'movimento', energy: 'low', icon: 'fa-child', description: 'Estique os braços e pernas ainda com calma.' },
+      { id: 'm2', title: 'Hidratação matinal', duration: '2 min', type: 'saude', energy: 'low', icon: 'fa-glass-water', description: 'Beba um copo de água para acordar o corpo.' },
+      { id: 'm3', title: 'Respiração consciente', duration: '3 min', type: 'mental', energy: 'low', icon: 'fa-wind', description: 'Respire fundo por alguns ciclos para começar o dia com presença.' },
+      { id: 'm4', title: 'Café da manhã tranquilo', duration: '15 min', type: 'saude', energy: 'low', icon: 'fa-mug-hot', description: 'Coma sem pressa, com atenção ao momento.' },
+      { id: 'm5', title: 'Pausa para café', duration: '10 min', type: 'pausa', energy: 'low', icon: 'fa-coffee', description: 'Um momento de calma antes de iniciar as tarefas.' },
+      { id: 'm6', title: 'Caminhada leve', duration: '15 min', type: 'movimento', energy: 'medium', icon: 'fa-walking', description: 'Uma volta curta para ativar o corpo.' },
+      { id: 'm7', title: 'Yoga matinal', duration: '10 min', type: 'movimento', energy: 'medium', icon: 'fa-spa', description: 'Posturas simples para acordar com leveza.' },
+      { id: 'm8', title: 'Meditação guiada', duration: '10 min', type: 'mental', energy: 'medium', icon: 'fa-om', description: 'Um momento de silêncio para organizar a mente.' },
+      { id: 'm9', title: 'Preparação organizada', duration: '10 min', type: 'disciplina', energy: 'medium', icon: 'fa-clipboard-check', description: 'Defina a ordem do dia antes de começar.' },
+      { id: 'm10', title: 'Exercício rápido', duration: '20 min', type: 'movimento', energy: 'high', icon: 'fa-running', description: 'Movimentos curtos para elevar a disposição.' },
+      { id: 'm11', title: 'Planejamento do dia', duration: '10 min', type: 'disciplina', energy: 'high', icon: 'fa-list-check', description: 'Escolha as 3 prioridades principais do dia.' },
+      { id: 'm12', title: 'Exposição ao sol', duration: '10 min', type: 'saude', energy: 'medium', icon: 'fa-sun', description: 'Luz natural ajuda o corpo a despertar.' }
     ],
     tarde: [
-      // Light activities
-      { id: 't1', title: 'Pausa para água', duration: '2 min', type: 'saude', energy: 'low', icon: 'fa-glass-water', description: 'Mais um copo de água. Seu corpo agradece!' },
-      { id: 't2', title: 'Respiro no trabalho', duration: '3 min', type: 'mental', energy: 'low', icon: 'fa-wind', description: 'Afaste-se da tela, respire fundo 3 vezes.' },
-      { id: 't3', title: 'Pausa para o lanche', duration: '10 min', type: 'saude', energy: 'low', icon: 'fa-apple-alt', description: 'Fruta, castanhas ou algo leve para manter a energia.' },
-      { id: 't4', title: 'Alongamento na cadeira', duration: '5 min', type: 'movimento', energy: 'low', icon: 'fa-chair', description: 'Rode os ombros, puxe o pescoço suavemente.' },
-      { id: 't5', title: 'Pausa visual', duration: '5 min', type: 'saude', energy: 'low', icon: 'fa-eye', description: 'Olhe para longe, feche os olhos por alguns segundos.' },
-      // Medium activities
-      { id: 't6', title: 'Caminhada no almoço', duration: '15 min', type: 'movimento', energy: 'medium', icon: 'fa-walking', description: 'Dê uma volta após o almoço, mesmo que curta.' },
-      { id: 't7', title: 'Meditação de meio-dia', duration: '10 min', type: 'mental', energy: 'medium', icon: 'fa-om', description: 'Recarregue suas energias com um momento de calma.' },
-      { id: 't8', title: 'Organização da tarde', duration: '5 min', type: 'disciplina', energy: 'medium', icon: 'fa-tasks', description: 'Revise o que falta e organize a prioridade.' },
-      { id: 't9', title: 'Lanche saudável', duration: '10 min', type: 'saude', energy: 'medium', icon: 'fa-carrot', description: 'Refeição equilibrada para manter o foco.' },
-      // High energy
-      { id: 't10', title: 'Exercício ao ar livre', duration: '20 min', type: 'movimento', energy: 'high', icon: 'fa-bicycle', description: 'Se o tempo permitir, aproveite para se mover mais.' },
+      { id: 't1', title: 'Pausa para água', duration: '2 min', type: 'saude', energy: 'low', icon: 'fa-glass-water', description: 'Mais um copo de água para manter o ritmo.' },
+      { id: 't2', title: 'Respiração no trabalho', duration: '3 min', type: 'mental', energy: 'low', icon: 'fa-wind', description: 'Desconecte por alguns instantes e respire fundo.' },
+      { id: 't3', title: 'Pausa para o lanche', duration: '10 min', type: 'saude', energy: 'low', icon: 'fa-apple-alt', description: 'Escolha algo leve para manter o foco.' },
+      { id: 't4', title: 'Alongamento na cadeira', duration: '5 min', type: 'movimento', energy: 'low', icon: 'fa-chair', description: 'Solte ombros, pescoço e mãos.' },
+      { id: 't5', title: 'Pausa visual', duration: '5 min', type: 'saude', energy: 'low', icon: 'fa-eye', description: 'Olhe para longe por alguns segundos.' },
+      { id: 't6', title: 'Caminhada no almoço', duration: '15 min', type: 'movimento', energy: 'medium', icon: 'fa-walking', description: 'Uma volta curta ajuda a reduzir a fadiga.' },
+      { id: 't7', title: 'Meditação de meio-dia', duration: '10 min', type: 'mental', energy: 'medium', icon: 'fa-om', description: 'Momento breve para recarregar a atenção.' },
+      { id: 't8', title: 'Organização da tarde', duration: '5 min', type: 'disciplina', energy: 'medium', icon: 'fa-tasks', description: 'Revise o que falta e reordene prioridades.' },
+      { id: 't9', title: 'Lanche saudável', duration: '10 min', type: 'saude', energy: 'medium', icon: 'fa-carrot', description: 'Alimente-se de forma equilibrada.' },
+      { id: 't10', title: 'Exercício ao ar livre', duration: '20 min', type: 'movimento', energy: 'high', icon: 'fa-bicycle', description: 'Aproveite a tarde para se movimentar mais.' },
+      { id: 't11', title: 'Revisão de metas', duration: '10 min', type: 'disciplina', energy: 'high', icon: 'fa-bullseye', description: 'Veja o que já avançou e o que ainda falta.' },
+      { id: 't12', title: 'Pausa de recuperação', duration: '8 min', type: 'pausa', energy: 'low', icon: 'fa-umbrella-beach', description: 'Descanse sem culpa por alguns minutos.' }
     ],
     noite: [
-      // Light activities - sleep preparation
-      { id: 'n1', title: 'Redução de telas', duration: 'Ongoing', type: 'sono', energy: 'low', icon: 'fa-mobile-alt', description: 'Tente diminuir o celular 1h antes de dormir.' },
-      { id: 'n2', title: 'Jantar leve', duration: '30 min', type: 'saude', energy: 'low', icon: 'fa-utensils', description: 'Comida leve e sem pressa para ajudar o sono.' },
-      { id: 'n3', title: 'Chá relaxante', duration: '10 min', type: 'saude', energy: 'low', icon: 'fa-mug-hot', description: 'Camomila ou cidreira para acalmar.' },
-      { id: 'n4', title: 'Leitura tranquila', duration: '15 min', type: 'mental', energy: 'low', icon: 'fa-book', description: 'Algo leve e agradável para acalmar a mente.' },
-      { id: 'n5', title: 'Respiração para sono', duration: '5 min', type: 'sono', energy: 'low', icon: 'fa-wind', description: 'Respire profundamente e solte o dia.' },
+      { id: 'n1', title: 'Redução de telas', duration: 'Ongoing', type: 'sono', energy: 'low', icon: 'fa-mobile-alt', description: 'Diminuir telas ajuda o corpo a desacelerar.' },
+      { id: 'n2', title: 'Jantar leve', duration: '30 min', type: 'saude', energy: 'low', icon: 'fa-utensils', description: 'Uma refeição leve favorece o descanso.' },
+      { id: 'n3', title: 'Chá relaxante', duration: '10 min', type: 'saude', energy: 'low', icon: 'fa-mug-hot', description: 'Escolha algo suave, como camomila ou cidreira.' },
+      { id: 'n4', title: 'Leitura tranquila', duration: '15 min', type: 'mental', energy: 'low', icon: 'fa-book', description: 'Leia algo leve para desacelerar a mente.' },
+      { id: 'n5', title: 'Respiração para sono', duration: '5 min', type: 'sono', energy: 'low', icon: 'fa-wind', description: 'Respire fundo e solte o dia aos poucos.' },
       { id: 'n6', title: 'Banho morno', duration: '15 min', type: 'saude', energy: 'low', icon: 'fa-shower', description: 'Água morna ajuda o corpo a relaxar.' },
-      { id: 'n7', title: 'Alongamento noturno', duration: '5 min', type: 'movimento', energy: 'low', icon: 'fa-bed', description: 'Alongue suavemente antes de deitar.' },
-      { id: 'n8', title: 'Preparação para dormir', duration: '10 min', type: 'sono', energy: 'low', icon: 'fa-moon', description: 'Organize o ambiente: escuro, fresco e silencioso.' },
-      // Mental wellness
+      { id: 'n7', title: 'Alongamento noturno', duration: '5 min', type: 'movimento', energy: 'low', icon: 'fa-bed', description: 'Alongue de forma suave antes de deitar.' },
+      { id: 'n8', title: 'Preparação para dormir', duration: '10 min', type: 'sono', energy: 'low', icon: 'fa-moon', description: 'Deixe o ambiente pronto para o descanso.' },
       { id: 'n9', title: 'Gratidão diária', duration: '3 min', type: 'mental', energy: 'low', icon: 'fa-heart', description: 'Pense em 3 coisas boas do seu dia.' },
-      { id: 'n10', title: 'Journaling leve', duration: '10 min', type: 'mental', energy: 'medium', icon: 'fa-pen', description: 'Escreva o que sentiu hoje, sem julgamentos.' },
+      { id: 'n10', title: 'Journaling leve', duration: '10 min', type: 'mental', energy: 'medium', icon: 'fa-pen', description: 'Escreva o que sentiu hoje, sem julgamento.' },
+      { id: 'n11', title: 'Organização da manhã seguinte', duration: '5 min', type: 'disciplina', energy: 'low', icon: 'fa-calendar-check', description: 'Deixe o próximo dia mais simples.' }
     ]
   };
 
-  // Routine descriptions by objective
   const objectiveDescriptions = {
     'relaxamento': 'Uma rotina suave e acolhedora, pensada para trazer mais calma e tranquilidade ao seu dia.',
     'produtividade': 'Uma rotina equilibrada que combina foco e pausas, para você render sem se esgotar.',
@@ -60,21 +58,62 @@
     'equilibrio-emocional': 'Uma rotina harmoniosa, equilibrando atividade e descanso emocional.'
   };
 
-  // General tips
   const generalTips = [
-    'Lembre-se: pequenas ações consistentes criam grandes mudanças.',
-    'Não há pressa. Faça no seu ritmo e do jeito que funciona para você.',
-    'Se um dia não der certo, está tudo bem. Amanhã é uma nova oportunidade.',
-    'Hidratação é essencial. Mantenha sua garrafa sempre por perto.',
-    'Pausas são produtivas. Seu cérebro precisa descansar para render mais.',
-    'Qualidade do sono é fundamental. Priorize seu descanso noturno.',
-    'Movimento é vida, mas pode ser leve e prazeroso.',
-    'Cuidar de você não é luxo, é necessidade.',
+    'Pequenas ações consistentes criam grandes mudanças.',
+    'Faça no seu ritmo, sem pressa desnecessária.',
+    'Se um dia não sair como esperado, recomece no próximo.',
+    'Mantenha água por perto ao longo do dia.',
+    'Pausas também fazem parte da produtividade.',
+    'Seu descanso influencia diretamente sua energia.',
+    'Movimento pode ser leve e prazeroso.',
+    'Cuidar de você é parte da rotina, não exceção.',
     'Celebre as pequenas conquistas do dia.',
-    'Seu bem-estar é uma jornada, não uma corrida.'
+    'Equilíbrio vale mais do que perfeição.'
   ];
 
-  // DOM Elements
+  const tipsByFocus = {
+    'relaxamento': [
+      'Reduza estímulos no fim do dia.',
+      'Prefira tarefas leves nos horários de maior cansaço.',
+      'Reserve alguns minutos para respirar sem pressa.'
+    ],
+    'produtividade': [
+      'Comece pelo que é mais importante.',
+      'Agrupe tarefas parecidas para economizar energia mental.',
+      'Use pausas curtas para manter consistência.'
+    ],
+    'bem-estar-fisico': [
+      'Inclua movimento leve em mais de um período do dia.',
+      'Não ignore sinais de cansaço do corpo.',
+      'Alongar antes de dormir pode ajudar bastante.'
+    ],
+    'sono-melhorado': [
+      'Evite telas perto do horário de dormir.',
+      'Mantenha a noite com atividades calmas.',
+      'Deixe o ambiente pronto para o descanso antes de deitar.'
+    ],
+    'reducao-ansiedade': [
+      'Respiração lenta ajuda a regular o ritmo interno.',
+      'Evite sobrecarregar a agenda com muitas tarefas seguidas.',
+      'Momentos curtos de pausa podem mudar o resto do dia.'
+    ],
+    'autoconhecimento': [
+      'Observe como cada atividade afeta seu humor.',
+      'Escrever o que sente ajuda a organizar pensamentos.',
+      'Reserve um momento diário para refletir com calma.'
+    ],
+    'energia-vitalidade': [
+      'Comece o dia com ações simples e progressivas.',
+      'Luz natural e movimento ajudam a despertar.',
+      'Prefira tarefas mais ativas quando a energia estiver melhor.'
+    ],
+    'equilibrio-emocional': [
+      'Misture ação, pausa e reflexão ao longo do dia.',
+      'Nem tudo precisa ser resolvido de uma vez.',
+      'Manter constância é mais importante que intensidade.'
+    ]
+  };
+
   const loadingEl = document.getElementById('rotina-loading');
   const emptyEl = document.getElementById('rotina-empty');
   const contentEl = document.getElementById('rotina-content');
@@ -86,53 +125,46 @@
   const userNameEl = document.getElementById('user-name');
   const btnRegenerate = document.getElementById('btn-regenerate');
 
-  // State
   let currentRoutine = null;
   let userProfile = null;
   let formData = null;
 
-  // Initialize
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     loadUserData();
-    
+
     if (btnRegenerate) {
-      btnRegenerate.addEventListener('click', function() {
-        generateNewRoutine();
-      });
+      btnRegenerate.addEventListener('click', generateNewRoutine);
     }
   });
 
-  // Load user data from server
   function loadUserData() {
     showLoading();
-    
-    Promise.all([
-      fetchProfile(),
-      fetchFormulario()
-    ]).then(function(results) {
-      const [profileResult, formularioResult] = results;
-      
-      if (profileResult.ok) {
-        userProfile = profileResult.body.profile || {};
-      }
-      
-      if (formularioResult.ok) {
-        formData = formularioResult.body.formulario || null;
-      }
-      
-      if (formData && hasValidData(formData)) {
-        generateRoutine();
-        showContent();
-      } else {
+
+    Promise.all([fetchProfile(), fetchFormulario()])
+      .then(function (results) {
+        const [profileResult, formularioResult] = results;
+
+        if (profileResult && profileResult.ok) {
+          userProfile = profileResult.body && profileResult.body.profile ? profileResult.body.profile : {};
+        }
+
+        if (formularioResult && formularioResult.ok) {
+          formData = formularioResult.body && formularioResult.body.formulario ? formularioResult.body.formulario : null;
+        }
+
+        if (formData && hasValidData(formData)) {
+          generateRoutine();
+          showContent();
+        } else {
+          showEmpty();
+        }
+      })
+      .catch(function (err) {
+        console.error('Error loading user data:', err);
         showEmpty();
-      }
-    }).catch(function(err) {
-      console.error('Error loading user data:', err);
-      showEmpty();
-    });
+      });
   }
 
-  // Fetch profile from server
   function fetchProfile() {
     if (window.Auth && window.Auth.api) {
       return window.Auth.api('/api/profile', { method: 'GET' });
@@ -140,7 +172,6 @@
     return Promise.resolve({ ok: false });
   }
 
-  // Fetch form data from server
   function fetchFormulario() {
     if (window.Auth && window.Auth.api) {
       return window.Auth.api('/api/formulario', { method: 'GET' });
@@ -148,64 +179,54 @@
     return Promise.resolve({ ok: false });
   }
 
-  // Check if form data has valid content
   function hasValidData(form) {
-    return form && (
+    return !!(form && (
       form.rotina_diaria ||
       form.horas_sono ||
       form.carga_trabalho ||
       form.foco_melhorar ||
       form.cuidados_mente
-    );
+    ));
   }
 
-  // Show loading state
   function showLoading() {
     if (loadingEl) loadingEl.hidden = false;
     if (emptyEl) emptyEl.hidden = true;
     if (contentEl) contentEl.hidden = true;
   }
 
-  // Show empty state
   function showEmpty() {
     if (loadingEl) loadingEl.hidden = true;
     if (emptyEl) emptyEl.hidden = false;
     if (contentEl) contentEl.hidden = true;
   }
 
-  // Show content
   function showContent() {
     if (loadingEl) loadingEl.hidden = true;
     if (emptyEl) emptyEl.hidden = true;
     if (contentEl) contentEl.hidden = false;
   }
 
-  // Generate personalized routine
   function generateRoutine() {
-    const routineFocus = userProfile && userProfile.routineFocus ? userProfile.routineFocus : 'relaxamento';
-    const fullName = userProfile && userProfile.fullName ? userProfile.fullName : 'Visitante';
-    
-    // Update user name
+    const routineFocus = normalizeFocus(userProfile && userProfile.routineFocus ? userProfile.routineFocus : 'relaxamento');
+    const fullName = userProfile && userProfile.fullName ? String(userProfile.fullName) : 'Visitante';
+
     if (userNameEl) {
-      userNameEl.textContent = fullName.split(' ')[0]; // First name only
+      userNameEl.textContent = getFirstName(fullName);
     }
-    
-    // Update description based on objective
+
     if (descriptionEl) {
-      descriptionEl.textContent = objectiveDescriptions[routineFocus] || objectiveDescriptions['relaxamento'];
+      descriptionEl.textContent = objectiveDescriptions[routineFocus] || objectiveDescriptions.relaxamento;
     }
-    
-    // Determine energy level from form data
-    const energyLevel = determineEnergyLevel();
-    
-    // Generate cards for each time period
-    generateCardsForPeriod('manha', manhaCardsEl, energyLevel, routineFocus);
-    generateCardsForPeriod('tarde', tardeCardsEl, energyLevel, routineFocus);
-    generateCardsForPeriod('noite', noiteCardsEl, 'low', routineFocus); // Night is always low energy
-    
-    // Generate tips
-    generateTips();
-    
+
+    const energyLevel = determineEnergyLevel(formData);
+
+    renderPeriodCards('manha', manhaCardsEl, energyLevel, routineFocus);
+    renderPeriodCards('tarde', tardeCardsEl, energyLevel, routineFocus);
+    renderPeriodCards('noite', noiteCardsEl, 'low', routineFocus);
+
+    generateTips(routineFocus, energyLevel);
+
     currentRoutine = {
       focus: routineFocus,
       energy: energyLevel,
@@ -213,80 +234,167 @@
     };
   }
 
-  // Generate new routine with variations
   function generateNewRoutine() {
     showLoading();
-    setTimeout(function() {
+    window.setTimeout(function () {
       generateRoutine();
       showContent();
-      
-      // Scroll to top smoothly
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 500);
+    }, 250);
   }
 
-  // Determine energy level from form data
-  function determineEnergyLevel() {
-    if (!formData) return 'low';
-    
-    const carga = formData.carga_trabalho || '';
-    const horasSono = formData.horas_sono || '';
-    
-    // High work load or little sleep = low energy
-    if (carga === 'Muito pesada' || horasSono === 'Menos de 5 horas') {
-      return 'low';
-    }
-    
-    if (carga === 'Pesada') {
-      return 'low';
-    }
-    
-    if (carga === 'Leve' && (horasSono === 'Entre 7 e 9 horas' || horasSono === 'Mais de 9 horas')) {
-      return 'high';
-    }
-    
+  function determineEnergyLevel(form) {
+    if (!form) return 'low';
+
+    const carga = normalizeText(form.carga_trabalho || '');
+    const horasSono = normalizeText(form.horas_sono || '');
+
+    const sleepValue = getSleepScore(horasSono);
+    const workloadValue = getWorkloadScore(carga);
+
+    if (sleepValue <= 1 || workloadValue >= 3) return 'low';
+    if (sleepValue >= 3 && workloadValue <= 1) return 'high';
     return 'medium';
   }
 
-  // Generate cards for a specific period
-  function generateCardsForPeriod(period, container, energyLevel, focus) {
+  function getSleepScore(value) {
+    if (value.includes('menos de 5')) return 0;
+    if (value.includes('5') || value.includes('6')) return 1;
+    if (value.includes('7') || value.includes('8') || value.includes('9')) return 3;
+    if (value.includes('mais de 9')) return 2;
+    return 2;
+  }
+
+  function getWorkloadScore(value) {
+    if (value.includes('muito pesada')) return 4;
+    if (value.includes('pesada')) return 3;
+    if (value.includes('moderada')) return 2;
+    if (value.includes('leve')) return 1;
+    return 2;
+  }
+
+  function renderPeriodCards(period, container, energyLevel, focus) {
     if (!container) return;
-    
-    // Get activities for this period
+
     const activities = activitiesDB[period] || [];
-    
-    // Filter by energy level (allow one level up for variety)
-    const allowedEnergies = [energyLevel];
-    if (energyLevel === 'medium') allowedEnergies.push('low');
-    if (energyLevel === 'high') allowedEnergies.push('medium');
-    
-    // Filter activities
-    let filtered = activities.filter(function(a) {
-      return allowedEnergies.indexOf(a.energy) !== -1;
-    });
-    
-    // Prioritize by type based on focus
-    const priorityTypes = getPriorityTypes(focus);
-    filtered.sort(function(a, b) {
-      const aPriority = priorityTypes.indexOf(a.type);
-      const bPriority = priorityTypes.indexOf(b.type);
-      if (aPriority !== bPriority) return aPriority - bPriority;
-      return Math.random() - 0.5; // Randomize same priority
-    });
-    
-    // Select 3-4 activities
-    const selected = filtered.slice(0, 3 + Math.floor(Math.random() * 2));
-    
-    // Shuffle for variety
-    selected.sort(function() { return Math.random() - 0.5; });
-    
-    // Render
-    container.innerHTML = selected.map(function(activity) {
+    const count = getTargetCount(period, energyLevel);
+
+    const filtered = activities
+      .filter(function (activity) {
+        return isEnergyAllowed(activity.energy, energyLevel, period);
+      })
+      .map(function (activity) {
+        return {
+          activity: activity,
+          score: scoreActivity(activity, period, energyLevel, focus)
+        };
+      })
+      .sort(function (a, b) {
+        if (b.score !== a.score) return b.score - a.score;
+        if (a.activity.title !== b.activity.title) return a.activity.title.localeCompare(b.activity.title, 'pt-BR');
+        return a.activity.id.localeCompare(b.activity.id);
+      })
+      .slice(0, count)
+      .map(function (item) {
+        return item.activity;
+      });
+
+    container.innerHTML = filtered.map(function (activity) {
       return createCardHTML(activity);
     }).join('');
   }
 
-  // Get priority activity types based on focus
+  function getTargetCount(period, energyLevel) {
+    if (period === 'noite') return 4;
+    if (energyLevel === 'high') return 4;
+    if (energyLevel === 'medium') return 3;
+    return 3;
+  }
+
+  function isEnergyAllowed(activityEnergy, userEnergy, period) {
+    if (period === 'noite') return activityEnergy === 'low';
+
+    if (userEnergy === 'low') {
+      return activityEnergy === 'low' || activityEnergy === 'medium';
+    }
+    if (userEnergy === 'medium') {
+      return activityEnergy === 'low' || activityEnergy === 'medium';
+    }
+    return activityEnergy === 'medium' || activityEnergy === 'high';
+  }
+
+  function scoreActivity(activity, period, energyLevel, focus) {
+    const priorityTypes = getPriorityTypes(focus);
+    const typeIndex = priorityTypes.indexOf(activity.type);
+    const typeScore = typeIndex === -1 ? 0 : Math.max(0, 60 - typeIndex * 10);
+
+    const energyScore = getEnergyFitScore(activity.energy, energyLevel, period);
+    const periodScore = getPeriodScore(activity.type, period);
+    const durationScore = getDurationScore(activity.duration, energyLevel);
+    const focusScore = getFocusSpecificBonus(activity, focus);
+
+    return typeScore + energyScore + periodScore + durationScore + focusScore;
+  }
+
+  function getEnergyFitScore(activityEnergy, userEnergy, period) {
+    if (period === 'noite') return activityEnergy === 'low' ? 50 : 0;
+
+    if (activityEnergy === userEnergy) return 45;
+    if (userEnergy === 'high' && activityEnergy === 'medium') return 25;
+    if (userEnergy === 'medium' && activityEnergy === 'low') return 20;
+    if (userEnergy === 'low' && activityEnergy === 'medium') return 15;
+    return 0;
+  }
+
+  function getPeriodScore(type, period) {
+    const periodMap = {
+      manha: ['movimento', 'saude', 'mental', 'disciplina'],
+      tarde: ['disciplina', 'movimento', 'saude', 'mental', 'pausa'],
+      noite: ['sono', 'mental', 'saude', 'pausa']
+    };
+
+    const order = periodMap[period] || [];
+    const index = order.indexOf(type);
+
+    if (index === -1) return 0;
+    return Math.max(0, 25 - index * 5);
+  }
+
+  function getDurationScore(duration, energyLevel) {
+    const minutes = parseDuration(duration);
+
+    if (energyLevel === 'low') {
+      if (minutes <= 5) return 15;
+      if (minutes <= 10) return 10;
+      return 0;
+    }
+
+    if (energyLevel === 'medium') {
+      if (minutes <= 10) return 15;
+      if (minutes <= 20) return 10;
+      return 5;
+    }
+
+    if (minutes <= 20) return 15;
+    return 8;
+  }
+
+  function getFocusSpecificBonus(activity, focus) {
+    const focusMap = {
+      'relaxamento': ['mental', 'pausa', 'sono'],
+      'produtividade': ['disciplina', 'mental'],
+      'bem-estar-fisico': ['movimento', 'saude'],
+      'sono-melhorado': ['sono', 'saude'],
+      'reducao-ansiedade': ['mental', 'pausa', 'sono'],
+      'autoconhecimento': ['mental', 'pausa'],
+      'energia-vitalidade': ['movimento', 'saude', 'disciplina'],
+      'equilibrio-emocional': ['mental', 'saude', 'pausa']
+    };
+
+    const allowed = focusMap[focus] || focusMap.relaxamento;
+    return allowed.indexOf(activity.type) !== -1 ? 20 : 0;
+  }
+
   function getPriorityTypes(focus) {
     const typeMap = {
       'relaxamento': ['mental', 'pausa', 'saude', 'movimento', 'sono', 'disciplina'],
@@ -298,37 +406,118 @@
       'energia-vitalidade': ['movimento', 'saude', 'mental', 'pausa', 'sono', 'disciplina'],
       'equilibrio-emocional': ['mental', 'saude', 'movimento', 'pausa', 'sono', 'disciplina']
     };
-    return typeMap[focus] || typeMap['relaxamento'];
+    return typeMap[focus] || typeMap.relaxamento;
   }
 
-  // Create card HTML
   function createCardHTML(activity) {
-    return '<div class="rotina-card" data-activity-id="' + activity.id + '">' +
-      '<div class="rotina-card__icon">' +
-        '<i class="fas ' + activity.icon + '"></i>' +
-      '</div>' +
-      '<div class="rotina-card__content">' +
-        '<h4 class="rotina-card__title">' + activity.title + '</h4>' +
-        '<span class="rotina-card__duration">' + activity.duration + '</span>' +
-        '<p class="rotina-card__description">' + activity.description + '</p>' +
-      '</div>' +
-    '</div>';
+    return (
+      '<div class="rotina-card" data-activity-id="' + escapeHtml(activity.id) + '">' +
+        '<div class="rotina-card__icon">' +
+          '<i class="fas ' + escapeHtml(activity.icon) + '"></i>' +
+        '</div>' +
+        '<div class="rotina-card__content">' +
+          '<h4 class="rotina-card__title">' + escapeHtml(activity.title) + '</h4>' +
+          '<span class="rotina-card__duration">' + escapeHtml(activity.duration) + '</span>' +
+          '<p class="rotina-card__description">' + escapeHtml(activity.description) + '</p>' +
+        '</div>' +
+      '</div>'
+    );
   }
 
-  // Generate tips
-  function generateTips() {
+  function generateTips(focus, energyLevel) {
     if (!tipsEl) return;
-    
-    // Select 3 random tips
-    const shuffled = generalTips.slice().sort(function() { return Math.random() - 0.5; });
-    const selected = shuffled.slice(0, 3);
-    
-    tipsEl.innerHTML = selected.map(function(tip) {
-      return '<div class="rotina-tip">' +
-        '<i class="fas fa-check-circle"></i>' +
-        '<span>' + tip + '</span>' +
-      '</div>';
+
+    const ordered = [];
+
+    const focusTips = tipsByFocus[focus] || tipsByFocus.relaxamento;
+    for (let i = 0; i < focusTips.length; i++) ordered.push(focusTips[i]);
+
+    if (energyLevel === 'low') {
+      ordered.push('Prefira uma rotina menor e consistente.');
+      ordered.push('Respeite os sinais do corpo e reduza a exigência.');
+    } else if (energyLevel === 'medium') {
+      ordered.push('Intercale tarefas com pausas curtas.');
+      ordered.push('Mantenha o ritmo sem tentar acelerar demais.');
+    } else {
+      ordered.push('Aproveite o bom momento para concluir prioridades.');
+      ordered.push('Use sua energia alta nas tarefas mais importantes.');
+    }
+
+    ordered.push(generalTips[0], generalTips[3], generalTips[8]);
+
+    const selected = dedupeArray(ordered).slice(0, 3);
+
+    tipsEl.innerHTML = selected.map(function (tip) {
+      return (
+        '<div class="rotina-tip">' +
+          '<i class="fas fa-check-circle"></i>' +
+          '<span>' + escapeHtml(tip) + '</span>' +
+        '</div>'
+      );
     }).join('');
   }
 
+  function parseDuration(duration) {
+    const text = normalizeText(duration || '');
+    const match = text.match(/(\d+)/);
+    return match ? Number(match[1]) : 0;
+  }
+
+  function normalizeFocus(value) {
+    const text = normalizeText(value);
+    const map = {
+      'relaxamento': 'relaxamento',
+      'produtividade': 'produtividade',
+      'bem estar fisico': 'bem-estar-fisico',
+      'bem-estar-fisico': 'bem-estar-fisico',
+      'sono melhorado': 'sono-melhorado',
+      'sono-melhorado': 'sono-melhorado',
+      'reducao ansiedade': 'reducao-ansiedade',
+      'redução ansiedade': 'reducao-ansiedade',
+      'redução de ansiedade': 'reducao-ansiedade',
+      'reducao-ansiedade': 'reducao-ansiedade',
+      'autoconhecimento': 'autoconhecimento',
+      'energia vitalidade': 'energia-vitalidade',
+      'energia-vitalidade': 'energia-vitalidade',
+      'equilibrio emocional': 'equilibrio-emocional',
+      'equilíbrio emocional': 'equilibrio-emocional',
+      'equilibrio-emocional': 'equilibrio-emocional'
+    };
+
+    return map[text] || 'relaxamento';
+  }
+
+  function normalizeText(value) {
+    return String(value || '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, ' ');
+  }
+
+  function getFirstName(fullName) {
+    const cleaned = String(fullName || '').trim();
+    if (!cleaned) return 'Visitante';
+    return cleaned.split(/\s+/)[0];
+  }
+
+  function dedupeArray(arr) {
+    const seen = new Set();
+    return arr.filter(function (item) {
+      const key = normalizeText(item);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 })();
