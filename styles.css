@@ -188,7 +188,7 @@ body {
 
 .nav-user-email {
   font-size: 0.75rem;
-  color: white;
+  color: var(--text);
   max-width: 7rem;
   overflow: hidden;
   text-overflow: ellipsis;
