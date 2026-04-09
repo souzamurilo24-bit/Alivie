@@ -73,6 +73,95 @@ function renderHeader(container) {
   }
 }
 
+function renderMobileAuth() {
+  const container = document.getElementById("mobile-nav-auth");
+  if (!container) return;
+  const session = getSession();
+  container.innerHTML = "";
+  if (session?.email) {
+    const wrap = document.createElement("div");
+    wrap.className = "nav-auth-logged";
+    wrap.style.flexDirection = "column";
+    wrap.style.alignItems = "flex-start";
+    wrap.style.gap = "0.5rem";
+    
+    const span = document.createElement("span");
+    span.className = "nav-user-email";
+    span.textContent = session.email;
+    span.style.fontSize = "0.875rem";
+    
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn btn-ghost";
+    btn.textContent = "Sair";
+    btn.addEventListener("click", async () => {
+      await logout();
+      window.location.reload();
+    });
+    
+    wrap.appendChild(span);
+    wrap.appendChild(btn);
+    container.appendChild(wrap);
+  } else {
+    const guestWrap = document.createElement("div");
+    guestWrap.className = "nav-auth-guest";
+    guestWrap.style.flexDirection = "column";
+    guestWrap.style.gap = "0.5rem";
+    
+    const aSignup = document.createElement("a");
+    aSignup.href = "signup.html";
+    aSignup.className = "btn btn-ghost";
+    aSignup.textContent = "Criar conta";
+    
+    const aLogin = document.createElement("a");
+    aLogin.href = "login.html";
+    aLogin.className = "btn btn-primary";
+    aLogin.textContent = "Entrar";
+    
+    guestWrap.appendChild(aSignup);
+    guestWrap.appendChild(aLogin);
+    container.appendChild(guestWrap);
+  }
+}
+
+function initMobileMenu() {
+  const menuBtn = document.getElementById("mobile-menu-btn");
+  const menuClose = document.getElementById("mobile-menu-close");
+  const menuOverlay = document.getElementById("mobile-menu-overlay");
+  const menu = document.getElementById("mobile-menu");
+  
+  if (!menuBtn || !menuClose || !menuOverlay || !menu) return;
+  
+  function openMenu() {
+    menu.classList.add("active");
+    menuOverlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+  
+  function closeMenu() {
+    menu.classList.remove("active");
+    menuOverlay.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+  
+  menuBtn.addEventListener("click", openMenu);
+  menuClose.addEventListener("click", closeMenu);
+  menuOverlay.addEventListener("click", closeMenu);
+  
+  // Close menu on escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menu.classList.contains("active")) {
+      closeMenu();
+    }
+  });
+  
+  // Close menu when clicking a link
+  const menuLinks = menu.querySelectorAll("a");
+  menuLinks.forEach(link => {
+    link.addEventListener("click", closeMenu);
+  });
+}
+
 function updateProfileLinkVisibility() {
   const session = getSession();
   const profileLinks = document.querySelectorAll('a[href="perfil.html"]');
@@ -222,6 +311,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (navAuth) {
     renderHeader(navAuth);
   }
+  renderMobileAuth();
+  initMobileMenu();
   updateWelcomeBanner();
   updateComeceGuestPanel();
   updateProfileLinkVisibility();
