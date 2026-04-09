@@ -1,3 +1,6 @@
+import { auth } from "./firebase.js";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
 let sessionCache = null;
 let sessionPromise = null;
 
