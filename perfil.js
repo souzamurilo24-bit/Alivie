@@ -1,4 +1,7 @@
-// Profile page functionality - Server-side storage only (except theme)
+import { db } from "./firebase.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+// Profile page functionality - Firestore storage only (except theme)
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('Profile.js loaded - DOM ready');
   
@@ -46,20 +49,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   // ==========================================
-  // LOAD PROFILE FROM SERVER (not localStorage)
+  // LOAD PROFILE FROM FIRESTORE
   // ==========================================
-  const loadProfileFromServer = async () => {
-    if (!window.Auth?.api) {
-      console.log('Auth not available, skipping server load');
+  const loadProfileFromFirestore = async () => {
+    const session = window.Auth.getSession();
+    if (!session?.uid) {
+      console.log('User not authenticated, skipping load');
       return;
     }
     
-    console.log('Loading profile from server...');
+    console.log('Loading profile from Firestore for user:', session.uid);
     try {
-      const res = await window.Auth.api('/api/profile', { method: 'GET' });
-      if (res.ok && res.body?.profile) {
-        const profile = res.body.profile;
-        console.log('Profile loaded from server:', profile);
+      const docRef = doc(db, "profiles", session.uid);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        const profile = docSnap.data();
+        console.log('Profile loaded from Firestore:', profile);
         
         // Fill form fields
         if (fullNameInput && profile.fullName) {
@@ -83,57 +89,51 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         updateProfileName();
       } else {
-        console.log('No profile found on server or error:', res.body);
+        console.log('No profile found in Firestore');
       }
     } catch (err) {
-      console.error('Error loading profile from server:', err);
+      console.error('Error loading profile from Firestore:', err);
     }
   };
   
   // ==========================================
-  // SAVE FUNCTIONALITY - Saves to SERVER ONLY
+  // SAVE FUNCTIONALITY - Saves to FIRESTORE
   // ==========================================
   if (saveButton) {
     saveButton.addEventListener('click', async (e) => {
       e.preventDefault();
-      console.log('Save clicked - saving to server');
+      console.log('Save clicked - saving to Firestore');
+      
+      const session = window.Auth.getSession();
+      if (!session?.uid) {
+        showNotification('Erro: usuário não autenticado', 'error');
+        return;
+      }
       
       const profileData = {
         fullName: fullNameInput?.value.trim() || '',
         username: usernameInput?.value.trim() || '',
         routineFocus: routineFocusInput?.value || '',
-        theme: themeToggle?.checked ? 'dark' : 'light'
+        theme: themeToggle?.checked ? 'dark' : 'light',
+        email: session.email,
+        updatedAt: new Date().toISOString()
       };
       
-      console.log('Saving profile to server:', profileData);
+      console.log('Saving profile to Firestore:', profileData);
       
-      if (window.Auth?.api) {
-        try {
-          const res = await window.Auth.api('/api/profile', {
-            method: 'POST',
-            body: JSON.stringify(profileData)
-          });
-          console.log('Server response:', res);
-          console.log('Response status:', res.status);
-          console.log('Response body:', res.body);
-          if (res.ok) {
-            showNotification('Alterações salvas com sucesso!', 'success');
-            if (themeToggle) {
-              localStorage.setItem('theme', themeToggle.checked ? 'dark' : 'light');
-            }
-          } else {
-            console.error('Server error:', res.body);
-            console.error('Response not ok, status:', res.status);
-            showNotification('Erro ao salvar. Tente novamente.', 'error');
-          }
-          updateProfileName();
-        } catch (err) {
-          console.error('Server save failed:', err);
-          console.error('Error details:', err.message || err);
-          showNotification('Erro de conexão. Tente novamente.', 'error');
+      try {
+        const docRef = doc(db, "profiles", session.uid);
+        await setDoc(docRef, profileData, { merge: true });
+        console.log('Profile saved successfully');
+        showNotification('Alterações salvas com sucesso!', 'success');
+        if (themeToggle) {
+          localStorage.setItem('theme', themeToggle.checked ? 'dark' : 'light');
         }
-      } else {
-        showNotification('Erro: sistema de autenticação não disponível', 'error');
+        updateProfileName();
+      } catch (err) {
+        console.error('Error saving profile to Firestore:', err);
+        console.error('Error details:', err.message || err);
+        showNotification('Erro ao salvar. Tente novamente.', 'error');
       }
     });
   }
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const session = window.Auth.getSession();
         if (session?.email && emailInput) {
           emailInput.value = session.email;
-          await loadProfileFromServer();
+          await loadProfileFromFirestore();
         }
       } catch (err) {
         console.error('Session error:', err);

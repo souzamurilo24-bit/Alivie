@@ -1,29 +1,7 @@
-let modalEl = null;
+import { db } from "./firebase.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-async function api(path, options = {}) {
-  const headers = {
-    "Content-Type": "application/json",
-    ...options.headers
-  };
-  
-  const response = await fetch(path, {
-    credentials: "include",
-    headers,
-    method: options.method || "GET",
-    body: options.body,
-  });
-  
-  const text = await response.text();
-  let body = {};
-  if (text) {
-    try {
-      body = JSON.parse(text);
-    } catch (e) {
-      body = {};
-    }
-  }
-  return { ok: response.ok, status: response.status, body };
-}
+let modalEl = null;
 
 function ensureModal() {
   if (document.getElementById("formulario-modal")) {
@@ -179,16 +157,20 @@ async function updatePromptPreview(text) {
   }
   
   try {
-    const res = await api("/api/profile", { method: "GET" });
-    if (res.ok && res.body?.profile?.routineFocus) {
-      const routineFocus = res.body.profile.routineFocus;
-      const routineLabel = routineOptions[routineFocus] || routineFocus;
-      const allOptions = Object.values(routineOptions).join(", ");
-      routineFocusText = "\n\nfoco da rotina: entre " + allOptions + ", escolhida: " + routineLabel;
+    const session = window.Auth.getSession();
+    if (session?.uid) {
+      const docRef = doc(db, "profiles", session.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists() && docSnap.data()?.routineFocus) {
+        const routineFocus = docSnap.data().routineFocus;
+        const routineLabel = routineOptions[routineFocus] || routineFocus;
+        const allOptions = Object.values(routineOptions).join(", ");
+        routineFocusText = "\n\nfoco da rotina: entre " + allOptions + ", escolhida: " + routineLabel;
+      }
     }
     displayPrompt();
   } catch (err) {
-    console.error("Error fetching profile from server:", err);
+    console.error("Error fetching profile from Firestore:", err);
     displayPrompt();
   }
 }
@@ -242,10 +224,18 @@ async function openModal() {
   }
 
   try {
-    const res = await api("/api/formulario");
-    if (res.ok && res.body?.formulario) {
-      fillForm(res.body.formulario);
-      updatePromptPreview(res.body.promptCondensado);
+    const session = window.Auth.getSession();
+    if (session?.uid) {
+      const docRef = doc(db, "forms", session.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const formData = docSnap.data();
+        fillForm(formData);
+        updatePromptPreview(formData.promptCondensado || "");
+      } else {
+        fillForm({});
+        updatePromptPreview("");
+      }
     } else {
       fillForm({});
       updatePromptPreview("");
@@ -279,24 +269,35 @@ async function onSubmitForm(e) {
   if (submitBtn) submitBtn.disabled = true;
 
   try {
-    const res = await api("/api/formulario", {
-      method: "PUT",
-      body: JSON.stringify(collectForm()),
-    });
-    if (msg) {
-      msg.hidden = false;
-      if (res.ok) {
-        msg.textContent = "Formulário e prompt condensado salvos. Você pode editar e salvar de novo quando quiser.";
-        msg.className = "modal-form__msg modal-form__msg--ok";
-        if (res.body?.promptCondensado) {
-          updatePromptPreview(res.body.promptCondensado);
-        }
-      } else {
-        msg.textContent = res.body?.error || "Não foi possível salvar.";
+    const session = window.Auth.getSession();
+    if (!session?.uid) {
+      if (msg) {
+        msg.hidden = false;
+        msg.textContent = "Erro: usuário não autenticado.";
         msg.className = "modal-form__msg modal-form__msg--err";
       }
+      return;
     }
-  } catch {
+
+    const formData = collectForm();
+    const promptCondensado = generatePromptCondensado(formData);
+    const dataToSave = {
+      ...formData,
+      promptCondensado,
+      updatedAt: new Date().toISOString()
+    };
+
+    const docRef = doc(db, "forms", session.uid);
+    await setDoc(docRef, dataToSave, { merge: true });
+
+    if (msg) {
+      msg.hidden = false;
+      msg.textContent = "Formulário e prompt condensado salvos. Você pode editar e salvar de novo quando quiser.";
+      msg.className = "modal-form__msg modal-form__msg--ok";
+      updatePromptPreview(promptCondensado);
+    }
+  } catch (err) {
+    console.error("Error saving form to Firestore:", err);
     if (msg) {
       msg.hidden = false;
       msg.textContent = "Erro de conexão. Tente de novo.";
@@ -314,6 +315,17 @@ function showMsg(text) {
     msg.hidden = false;
     msg.className = "modal-form__msg modal-form__msg--err";
   }
+}
+
+function generatePromptCondensado(formData) {
+  const parts = [];
+  if (formData.rotina_diaria) parts.push(`Rotina semanal: ${formData.rotina_diaria}`);
+  if (formData.horas_sono) parts.push(`Sono: ${formData.horas_sono}`);
+  if (formData.carga_trabalho) parts.push(`Carga de trabalho: ${formData.carga_trabalho}`);
+  if (formData.foco_melhorar) parts.push(`Foco para melhorar: ${formData.foco_melhorar}`);
+  if (formData.cuidados_mente) parts.push(`Cuidados com a saúde mental: ${formData.cuidados_mente}`);
+  if (formData.observacoes) parts.push(`Observações: ${formData.observacoes}`);
+  return parts.join("\n");
 }
 
 window.initFormulario = () => {

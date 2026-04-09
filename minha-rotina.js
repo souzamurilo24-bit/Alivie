@@ -1,3 +1,6 @@
+import { db } from "./firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
 // Minha Rotina - Versão aprimorada e determinística
 (function () {
   'use strict';
@@ -165,18 +168,40 @@
       });
   }
 
-  function fetchProfile() {
-    if (window.Auth && window.Auth.api) {
-      return window.Auth.api('/api/profile', { method: 'GET' });
+  async function fetchProfile() {
+    const session = window.Auth.getSession();
+    if (!session?.uid) {
+      return Promise.resolve({ ok: false });
     }
-    return Promise.resolve({ ok: false });
+    try {
+      const docRef = doc(db, "profiles", session.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return { ok: true, body: { profile: docSnap.data() } };
+      }
+      return { ok: false };
+    } catch (err) {
+      console.error('Error fetching profile from Firestore:', err);
+      return { ok: false };
+    }
   }
 
-  function fetchFormulario() {
-    if (window.Auth && window.Auth.api) {
-      return window.Auth.api('/api/formulario', { method: 'GET' });
+  async function fetchFormulario() {
+    const session = window.Auth.getSession();
+    if (!session?.uid) {
+      return Promise.resolve({ ok: false });
     }
-    return Promise.resolve({ ok: false });
+    try {
+      const docRef = doc(db, "forms", session.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return { ok: true, body: { formulario: docSnap.data() } };
+      }
+      return { ok: false };
+    } catch (err) {
+      console.error('Error fetching form from Firestore:', err);
+      return { ok: false };
+    }
   }
 
   function hasValidData(form) {

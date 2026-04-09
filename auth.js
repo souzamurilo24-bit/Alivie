@@ -1,49 +1,25 @@
 import { auth } from "./firebase.js";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 let sessionCache = null;
 let sessionPromise = null;
-
-async function api(path, options = {}) {
-  const headers = {
-    "Content-Type": "application/json",
-    ...options.headers
-  };
-  const response = await fetch(path, {
-    credentials: "include",
-    headers,
-    method: options.method || "GET",
-    body: options.body,
-  });
-  const text = await response.text();
-  let body = {};
-  if (text) {
-    try {
-      body = JSON.parse(text);
-    } catch (e) {
-      body = {};
-    }
-  }
-  return { ok: response.ok, status: response.status, body };
-}
 
 async function fetchSession() {
   if (sessionPromise) {
     return sessionPromise;
   }
   sessionPromise = (async () => {
-    try {
-      const res = await api("/api/me");
-      if (res.ok && res.body?.user?.email) {
-        sessionCache = { email: res.body.user.email };
-      } else {
-        sessionCache = null;
-      }
-      return sessionCache;
-    } catch {
-      sessionCache = null;
-      return null;
-    }
+    return new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user?.email) {
+          sessionCache = { email: user.email, uid: user.uid };
+        } else {
+          sessionCache = null;
+        }
+        unsubscribe();
+        resolve(sessionCache);
+      });
+    });
   })();
   return sessionPromise;
 }
@@ -53,7 +29,7 @@ function getSession() {
 }
 
 async function logout() {
-  await api("/api/logout", { method: "POST", body: "{}" });
+  await signOut(auth);
   sessionCache = null;
   sessionPromise = null;
 }
@@ -151,22 +127,12 @@ function initLoginPage() {
     if (submitBtn) submitBtn.disabled = true;
 
     try {
-      const res = await api("/api/login", {
-        method: "POST",
-        body: JSON.stringify({
-          email: email?.value || "",
-          password: password?.value || "",
-        }),
-      });
-      if (res.ok) {
-        window.location.href = "index.html";
-      } else if (errEl) {
-        errEl.textContent = res.body?.error || "Não foi possível entrar.";
-        errEl.hidden = false;
-      }
-    } catch {
+      const userCredential = await signInWithEmailAndPassword(auth, email?.value || "", password?.value || "");
+      sessionCache = { email: userCredential.user.email, uid: userCredential.user.uid };
+      window.location.href = "index.html";
+    } catch (error) {
       if (errEl) {
-        errEl.textContent = "Erro de conexão. Tente de novo.";
+        errEl.textContent = getAuthErrorMessage(error.code) || "Não foi possível entrar.";
         errEl.hidden = false;
       }
     } finally {
@@ -207,22 +173,12 @@ function initSignupPage() {
     if (submitBtn) submitBtn.disabled = true;
 
     try {
-      const res = await api("/api/signup", {
-        method: "POST",
-        body: JSON.stringify({
-          email: email?.value || "",
-          password: password?.value || "",
-        }),
-      });
-      if (res.ok) {
-        window.location.href = "login.html?cadastro=ok";
-      } else if (errEl) {
-        errEl.textContent = res.body?.error || "Não foi possível cadastrar.";
-        errEl.hidden = false;
-      }
-    } catch {
+      const userCredential = await createUserWithEmailAndPassword(auth, email?.value || "", password?.value || "");
+      sessionCache = { email: userCredential.user.email, uid: userCredential.user.uid };
+      window.location.href = "login.html?cadastro=ok";
+    } catch (error) {
       if (errEl) {
-        errEl.textContent = "Erro de conexão. Tente de novo.";
+        errEl.textContent = getAuthErrorMessage(error.code) || "Não foi possível cadastrar.";
         errEl.hidden = false;
       }
     } finally {
@@ -231,12 +187,33 @@ function initSignupPage() {
   });
 }
 
+function getAuthErrorMessage(code) {
+  const errorMessages = {
+    'auth/invalid-email': 'E-mail inválido.',
+    'auth/user-disabled': 'Esta conta foi desabilitada.',
+    'auth/user-not-found': 'Usuário não encontrado.',
+    'auth/wrong-password': 'Senha incorreta.',
+    'auth/email-already-in-use': 'Este e-mail já está em uso.',
+    'auth/weak-password': 'A senha é muito fraca. Use pelo menos 6 caracteres.',
+    'auth/invalid-credential': 'Credenciais inválidas.',
+    'auth/too-many-requests': 'Muitas tentativas. Tente novamente mais tarde.',
+  };
+  return errorMessages[code] || 'Erro de autenticação. Tente novamente.';
+}
+
+// Mock api function for compatibility (no longer used)
+async function api(path, options = {}) {
+  console.warn('API function called but backend is disabled:', path);
+  return { ok: false, status: 404, body: { error: 'Backend API disabled. Using Firebase instead.' } };
+}
+
 window.Auth = {
   api,
   fetchSession,
   getSession,
   logout,
   renderHeader,
+  auth,
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
