@@ -89,24 +89,6 @@ body {
   min-width: 0;
 }
 
-.site-header .container {
-  grid-template-columns: auto 1fr auto;
-}
-
-.mobile-menu-btn {
-  grid-column: 1;
-}
-
-.logo {
-  grid-column: 2;
-  justify-self: center;
-}
-
-.nav {
-  grid-column: 3;
-  justify-self: end;
-}
-
 .logo {
   font-size: 1.25rem;
   font-weight: 700;
@@ -204,19 +186,21 @@ body {
 
 .nav-auth-guest .btn,
 .nav-auth-logged .btn {
-  font-size: 0.9375rem;
-  padding: 0.625rem 1.25rem;
-  min-width: 100px;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  min-width: 110px;
 }
 
 .nav-user-email {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: white;
-  max-width: 7rem;
+  max-width: 10rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   flex-shrink: 0;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .btn {
@@ -264,15 +248,16 @@ body {
 }
 
 .btn-ghost {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.15);
   color: white;
-  border: 1px solid white;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btn-ghost:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: rgba(74, 111, 165, 0.1);
+  color: white;
+  border-color: white;
+  background: rgba(255, 255, 255, 0.25);
   transform: translateY(-1px);
 }
 
@@ -1817,15 +1802,15 @@ input:checked + .toggle-slider:before {
   display: none;
   position: fixed;
   top: 0;
-  right: -100%;
+  left: -100%;
   width: 280px;
   max-width: 85vw;
   height: 100vh;
   background: white;
   z-index: 999;
-  transition: right 0.3s ease;
+  transition: left 0.3s ease;
   overflow-y: auto;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
 }
 
 [data-theme="dark"] .mobile-menu {
@@ -1833,7 +1818,7 @@ input:checked + .toggle-slider:before {
 }
 
 .mobile-menu.active {
-  right: 0;
+  left: 0;
 }
 
 .mobile-menu-overlay.active {
@@ -1912,6 +1897,11 @@ input:checked + .toggle-slider:before {
 @media (max-width: 767px) {
   .mobile-menu-btn {
     display: block;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.5rem 0.25rem;
   }
   
   .nav {
@@ -1919,7 +1909,14 @@ input:checked + .toggle-slider:before {
   }
   
   .site-header .container {
-    grid-template-columns: auto auto;
+    grid-template-columns: auto 1fr;
+    position: relative;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    justify-self: start;
+    padding-left: 0.5rem;
   }
 }
 
