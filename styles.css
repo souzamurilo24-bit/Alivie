@@ -1682,3 +1682,49 @@ input:checked + .toggle-slider:before {
     transform: translateY(0);
   }
 }
+
+/* Fix mobile spacing - occupy full width on small screens */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding-inline: 1rem;
+  }
+  
+  .site-header .container {
+    width: 100%;
+    padding-inline: 1rem;
+  }
+  
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* Large screens - improve layout on widescreen and 4K monitors */
+@media (min-width: 1440px) {
+  :root {
+    --max-width: 90ch;
+  }
+  
+  .container {
+    padding-inline: 2rem;
+  }
+  
+  .site-header .container {
+    padding-inline: 2rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  :root {
+    --max-width: 100ch;
+  }
+  
+  .container {
+    padding-inline: 3rem;
+  }
+  
+  .site-header .container {
+    padding-inline: 3rem;
+  }
+}
