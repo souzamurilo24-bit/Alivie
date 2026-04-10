@@ -318,8 +318,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateProfileLinkVisibility();
   initLoginPage();
   initSignupPage();
-  if (typeof initFormulario === "function") {
-    initFormulario();
+  // Call initFormulario from formulario.js if it's been loaded
+  if (typeof window.initFormulario === "function") {
+    window.initFormulario();
   }
 
   const loginNotice = document.getElementById("login-notice");

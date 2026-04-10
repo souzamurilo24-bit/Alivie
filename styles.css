@@ -188,7 +188,7 @@ body {
 
 .nav-user-email {
   font-size: 0.75rem;
-  color: var(--text);
+  color: white;
   max-width: 7rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1117,6 +1117,11 @@ input:checked + .toggle-slider:before {
   --border-light: #4a5568;
 }
 
+[data-theme="dark"] .rotina-header {
+  background: linear-gradient(135deg, #2c5282, #1e3a5f);
+  border-color: #1e3a5f;
+}
+
 [data-theme="dark"] .site-header {
   background: linear-gradient(135deg, #2c5282, #1e3a5f);
   border-bottom-color: #1e3a5f;
@@ -1160,7 +1165,7 @@ input:checked + .toggle-slider:before {
 .rotina-header {
   margin-bottom: 2.5rem;
   padding: 2rem;
-  background: linear-gradient(135deg, var(--accent), var(--secondary));
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   border-radius: 16px;
   color: white;
   display: flex;

@@ -1,3 +1,18 @@
+/**
+ * DEPRECATED: Backend API Server
+ * 
+ * ⚠️  This backend is NOT in use by the current Alivie frontend.
+ * The application uses Firebase for all data persistence and authentication.
+ * 
+ * These API endpoints exist only for reference/backup and are never called.
+ * Frontend uses: Firebase Auth + Firestore
+ * 
+ * To use this backend instead of Firebase:
+ * 1. Update frontend to call these API endpoints instead of Firebase
+ * 2. Remove Firebase integration from frontend
+ * 3. Deploy and run this server alongside the frontend
+ */
+
 const path = require("path");
 const fs = require("fs");
 const express = require("express");
@@ -7,7 +22,11 @@ const cookieParser = require("cookie-parser");
 
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET =
-  process.env.JWT_SECRET || "altere-isso-em-producao-use-uma-string-longa";
+  process.env.JWT_SECRET || (() => {
+    console.warn('⚠️  WARNING: JWT_SECRET not set. Using weak default for development only.');
+    console.warn('⚠️  In production, set JWT_SECRET environment variable to a strong random string.');
+    return "altere-isso-em-producao-use-uma-string-longa-e-aleatoria";
+  })();
 const JWT_COOKIE = "token";
 const COOKIE_OPTIONS = {
   httpOnly: true,

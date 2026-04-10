@@ -3,8 +3,6 @@ import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/
 
 // Profile page functionality - Firestore storage only (except theme)
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('Profile.js loaded - DOM ready');
-  
   // Get DOM elements
   const fullNameInput = document.getElementById('full-name');
   const profileNameSpan = document.getElementById('profile-name');
@@ -15,13 +13,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const saveButton = document.querySelector('.form-actions .btn-primary');
   const cancelButton = document.querySelector('.form-actions .btn-ghost');
   
-  console.log('Elements found:', {
-    fullNameInput: !!fullNameInput,
-    profileNameSpan: !!profileNameSpan,
-    emailInput: !!emailInput,
-    themeToggle: !!themeToggle
-  });
-  
   // ==========================================
   // NAME SYNC - Works immediately!
   // ==========================================
@@ -29,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!fullNameInput || !profileNameSpan) return;
     
     const fullName = fullNameInput.value.trim();
-    console.log('Updating name to:', fullName);
     
     if (fullName) {
       const firstName = fullName.split(' ')[0];
@@ -54,18 +44,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loadProfileFromFirestore = async () => {
     const session = window.Auth.getSession();
     if (!session?.uid) {
-      console.log('User not authenticated, skipping load');
       return;
     }
     
-    console.log('Loading profile from Firestore for user:', session.uid);
     try {
       const docRef = doc(db, "profiles", session.uid);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
         const profile = docSnap.data();
-        console.log('Profile loaded from Firestore:', profile);
         
         // Fill form fields
         if (fullNameInput && profile.fullName) {
@@ -88,8 +75,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         
         updateProfileName();
-      } else {
-        console.log('No profile found in Firestore');
       }
     } catch (err) {
       console.error('Error loading profile from Firestore:', err);
@@ -102,7 +87,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (saveButton) {
     saveButton.addEventListener('click', async (e) => {
       e.preventDefault();
-      console.log('Save clicked - saving to Firestore');
       
       const session = window.Auth.getSession();
       if (!session?.uid) {
@@ -119,20 +103,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         updatedAt: new Date().toISOString()
       };
       
-      console.log('Saving profile to Firestore:', profileData);
-      
       try {
         const docRef = doc(db, "profiles", session.uid);
         await setDoc(docRef, profileData, { merge: true });
-        console.log('Profile saved successfully');
         showNotification('Alterações salvas com sucesso!', 'success');
         if (themeToggle) {
           localStorage.setItem('theme', themeToggle.checked ? 'dark' : 'light');
         }
         updateProfileName();
       } catch (err) {
-        console.error('Error saving profile to Firestore:', err);
-        console.error('Error details:', err.message || err);
+        console.error('Error saving profile:', err);
         showNotification('Erro ao salvar. Tente novamente.', 'error');
       }
     });

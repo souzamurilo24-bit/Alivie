@@ -484,8 +484,18 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase
 
   function parseDuration(duration) {
     const text = normalizeText(duration || '');
-    const match = text.match(/(\d+)/);
-    return match ? Number(match[1]) : 0;
+    const numbers = text.match(/\d+/g);
+    
+    if (!numbers || numbers.length === 0) return 0;
+    
+    // If multiple numbers (like "5 e 7"), return average
+    const numArray = numbers.map(Number);
+    if (numArray.length > 1) {
+      return Math.round(numArray.reduce((a, b) => a + b) / numArray.length);
+    }
+    
+    // Single number
+    return numArray[0];
   }
 
   function normalizeFocus(value) {
