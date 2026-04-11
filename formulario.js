@@ -271,10 +271,14 @@ async function onSubmitForm(e) {
   try {
     const session = window.Auth.getSession();
     if (!session?.uid) {
+      const errorMsg = "Erro: usuário não autenticado.";
       if (msg) {
         msg.hidden = false;
-        msg.textContent = "Erro: usuário não autenticado.";
+        msg.textContent = errorMsg;
         msg.className = "modal-form__msg modal-form__msg--err";
+      }
+      if (window.Toast) {
+        window.Toast.error(errorMsg);
       }
       return;
     }
@@ -296,12 +300,19 @@ async function onSubmitForm(e) {
       msg.className = "modal-form__msg modal-form__msg--ok";
       updatePromptPreview(promptCondensado);
     }
+    if (window.Toast) {
+      window.Toast.success('Formulário salvo com sucesso!');
+    }
   } catch (err) {
     console.error("Error saving form to Firestore:", err);
+    const errorMsg = "Erro de conexão. Tente de novo.";
     if (msg) {
       msg.hidden = false;
-      msg.textContent = "Erro de conexão. Tente de novo.";
+      msg.textContent = errorMsg;
       msg.className = "modal-form__msg modal-form__msg--err";
+    }
+    if (window.Toast) {
+      window.Toast.error(errorMsg);
     }
   } finally {
     if (submitBtn) submitBtn.disabled = false;

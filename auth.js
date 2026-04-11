@@ -32,6 +32,9 @@ async function logout() {
   await signOut(auth);
   sessionCache = null;
   sessionPromise = null;
+  if (window.Toast) {
+    window.Toast.success('Você saiu da sua conta.');
+  }
 }
 
 function renderHeader(container) {
@@ -218,11 +221,22 @@ function initLoginPage() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email?.value || "", password?.value || "");
       sessionCache = { email: userCredential.user.email, uid: userCredential.user.uid };
-      window.location.href = "index.html";
+      if (window.Toast) {
+        window.Toast.success('Login realizado com sucesso!');
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
+      } else {
+        window.location.href = "index.html";
+      }
     } catch (error) {
+      const errorMsg = getAuthErrorMessage(error.code) || "Não foi possível entrar.";
       if (errEl) {
-        errEl.textContent = getAuthErrorMessage(error.code) || "Não foi possível entrar.";
+        errEl.textContent = errorMsg;
         errEl.hidden = false;
+      }
+      if (window.Toast) {
+        window.Toast.error(errorMsg);
       }
     } finally {
       if (submitBtn) submitBtn.disabled = false;
@@ -252,9 +266,13 @@ function initSignupPage() {
     const submitBtn = form.querySelector('[type="submit"]');
 
     if (password && confirm && password.value !== confirm.value) {
+      const errorMsg = "As senhas não coincidem.";
       if (errEl) {
-        errEl.textContent = "As senhas não coincidem.";
+        errEl.textContent = errorMsg;
         errEl.hidden = false;
+      }
+      if (window.Toast) {
+        window.Toast.warning(errorMsg);
       }
       return;
     }
@@ -264,11 +282,20 @@ function initSignupPage() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email?.value || "", password?.value || "");
       sessionCache = { email: userCredential.user.email, uid: userCredential.user.uid };
-      window.location.href = "login.html?cadastro=ok";
+      if (window.Toast) {
+        window.Toast.success('Conta criada com sucesso! Redirecionando...');
+      }
+      setTimeout(() => {
+        window.location.href = "login.html?cadastro=ok";
+      }, 1500);
     } catch (error) {
+      const errorMsg = getAuthErrorMessage(error.code) || "Não foi possível cadastrar.";
       if (errEl) {
-        errEl.textContent = getAuthErrorMessage(error.code) || "Não foi possível cadastrar.";
+        errEl.textContent = errorMsg;
         errEl.hidden = false;
+      }
+      if (window.Toast) {
+        window.Toast.error(errorMsg);
       }
     } finally {
       if (submitBtn) submitBtn.disabled = false;

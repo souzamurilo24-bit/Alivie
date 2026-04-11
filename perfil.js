@@ -191,39 +191,44 @@ document.addEventListener('DOMContentLoaded', async () => {
   }, 300);
 });
 
-// Notification function
-const showNotification = (message, type) => {
-  const existing = document.querySelector('.notification');
-  if (existing) existing.remove();
-  
-  const notification = document.createElement('div');
-  notification.textContent = message;
-  Object.assign(notification.style, {
-    position: 'fixed',
-    top: '20px',
-    right: '20px',
-    padding: '1rem 1.5rem',
-    borderRadius: '8px',
-    color: 'white',
-    fontWeight: '600',
-    zIndex: '9999',
-    transform: 'translateX(100%)',
-    transition: 'transform 0.3s ease'
-  });
-  
-  notification.style.background = type === 'success' ? '#48bb78' : 
-                                  type === 'error' ? '#e53e3e' : '#2c5282';
-  
-  document.body.appendChild(notification);
-  
-  requestAnimationFrame(() => {
-    notification.style.transform = 'translateX(0)';
-  });
-  
-  setTimeout(() => {
-    notification.style.transform = 'translateX(100%)';
+// Notification function - uses Toast system if available
+const showNotification = (message, type = 'info') => {
+  if (window.Toast) {
+    window.Toast.show({ message, type });
+  } else {
+    // Fallback for when Toast is not loaded
+    const existing = document.querySelector('.notification');
+    if (existing) existing.remove();
+    
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    Object.assign(notification.style, {
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      padding: '1rem 1.5rem',
+      borderRadius: '8px',
+      color: 'white',
+      fontWeight: '600',
+      zIndex: '9999',
+      transform: 'translateX(100%)',
+      transition: 'transform 0.3s ease'
+    });
+    
+    notification.style.background = type === 'success' ? '#48bb78' : 
+                                    type === 'error' ? '#e53e3e' : '#2c5282';
+    
+    document.body.appendChild(notification);
+    
+    requestAnimationFrame(() => {
+      notification.style.transform = 'translateX(0)';
+    });
+    
     setTimeout(() => {
-      notification.parentNode?.removeChild(notification);
-    }, 300);
-  }, 3000);
+      notification.style.transform = 'translateX(100%)';
+      setTimeout(() => {
+        notification.parentNode?.removeChild(notification);
+      }, 300);
+    }, 3000);
+  }
 };

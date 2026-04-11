@@ -3,18 +3,31 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-aut
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 /**
- * SECURITY CHECKLIST FOR FIREBASE:
+ * FIREBASE SECURITY SETUP
+ * ======================
  * 
- * ⚠️  CRITICAL: Set up Firestore Security Rules in Firebase Console
+ * ⚠️  CRITICAL: Deploy Firestore Security Rules
  * 
- * Current status: Rules are likely permissive (allow all authenticated users)
+ * The firestore.rules file in this directory contains secure rules that:
+ * - Ensure users can ONLY access their own data (profiles, forms, stats)
+ * - Validate data structure before writes
+ * - Prevent unauthorized access to other users' data
  * 
- * Recommended Rules:
- * match /profiles/{userId} {
- *   allow read, write: if request.auth.uid == userId;
- * }
+ * TO DEPLOY RULES:
+ * 1. Install Firebase CLI: npm install -g firebase-tools
+ * 2. Login: firebase login
+ * 3. Init: firebase init (select Firestore)
+ * 4. Copy rules from firestore.rules to firebase project
+ * 5. Deploy: firebase deploy --only firestore:rules
  * 
- * This ensures users can only access their own profile data.
+ * OR manually copy rules from firestore.rules to Firebase Console:
+ * https://console.firebase.google.com/project/alivie-project/firestore/rules
+ * 
+ * SECURITY FEATURES IMPLEMENTED:
+ * ✅ User isolation - users can only access their own documents
+ * ✅ Data validation - validates required fields
+ * ✅ Authentication required - all reads/writes need auth
+ * ✅ Default deny - unknown collections are blocked
  */
 
 // Firebase configuration - should be loaded from environment variables in production
