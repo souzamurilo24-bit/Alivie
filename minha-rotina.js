@@ -138,6 +138,12 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase
     if (btnRegenerate) {
       btnRegenerate.addEventListener('click', generateNewRoutine);
     }
+
+    // Initialize dashboard
+    initDashboard();
+
+    // Setup activity tracking
+    setupActivityTracking();
   });
 
   function loadUserData() {
@@ -445,6 +451,9 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase
           '<span class="rotina-card__duration">' + escapeHtml(activity.duration) + '</span>' +
           '<p class="rotina-card__description">' + escapeHtml(activity.description) + '</p>' +
         '</div>' +
+        '<button class="rotina-card__complete-btn" data-activity-id="' + escapeHtml(activity.id) + '" title="Marcar como concluída">' +
+          '<i class="fas fa-check"></i>' +
+        '</button>' +
       '</div>'
     );
   }
@@ -554,5 +563,100 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  }
+
+  // Initialize Dashboard
+  function initDashboard() {
+    const session = window.Auth?.getSession ? window.Auth.getSession() : null;
+    if (session?.uid && typeof window.initDashboard === 'function') {
+      window.initDashboard('dashboard-container', session.uid);
+    }
+  }
+
+  // Setup Activity Completion Tracking
+  function setupActivityTracking() {
+    const today = new Date().toISOString().split('T')[0];
+    const storageKey = 'completedActivities_' + today;
+
+    // Load today's completed activities from localStorage
+    const completedToday = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    // Mark completed activities in the UI
+    completedToday.forEach(function(activityId) {
+      markActivityComplete(activityId, false);
+    });
+
+    // Add event listeners to complete buttons
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.rotina-card__complete-btn');
+      if (!btn) return;
+
+      const card = btn.closest('.rotina-card');
+      const activityId = btn.dataset.activityId;
+
+      if (btn.classList.contains('completed')) {
+        // Unmark as complete
+        btn.classList.remove('completed');
+        card?.classList.remove('completed');
+        btn.title = 'Marcar como concluída';
+        removeCompletedActivity(activityId);
+      } else {
+        // Mark as complete
+        btn.classList.add('completing');
+        setTimeout(function() {
+          btn.classList.remove('completing');
+          btn.classList.add('completed');
+          card?.classList.add('completed');
+          btn.title = 'Desmarcar';
+        }, 300);
+
+        // Save to localStorage
+        saveCompletedActivity(activityId);
+
+        // Track in Stats
+        const session = window.Auth?.getSession ? window.Auth.getSession() : null;
+        if (session?.uid && typeof window.Stats?.recordActivity === 'function') {
+          window.Stats.recordActivity(session.uid, activityId);
+        }
+
+        // Show toast
+        if (window.Toast) {
+          window.Toast.success('Atividade concluída! 🎉');
+        }
+      }
+    });
+  }
+
+  function markActivityComplete(activityId, animate) {
+    const btn = document.querySelector('.rotina-card__complete-btn[data-activity-id="' + activityId + '"]');
+    if (!btn) return;
+
+    const card = btn.closest('.rotina-card');
+    btn.classList.add('completed');
+    card?.classList.add('completed');
+    btn.title = 'Desmarcar';
+  }
+
+  function saveCompletedActivity(activityId) {
+    const today = new Date().toISOString().split('T')[0];
+    const storageKey = 'completedActivities_' + today;
+    const completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    if (!completed.includes(activityId)) {
+      completed.push(activityId);
+      localStorage.setItem(storageKey, JSON.stringify(completed));
+    }
+  }
+
+  function removeCompletedActivity(activityId) {
+    const today = new Date().toISOString().split('T')[0];
+    const storageKey = 'completedActivities_' + today;
+    const completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    const index = completed.indexOf(activityId);
+    if (index > -1) {
+      completed.splice(index, 1);
+      localStorage.setItem(storageKey, JSON.stringify(completed));
+    }
   }
 })();

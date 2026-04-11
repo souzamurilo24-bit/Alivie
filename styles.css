@@ -2193,3 +2193,446 @@ input:checked + .toggle-slider:before {
     transition: none;
   }
 }
+
+/* ============================================
+   DASHBOARD STYLES
+   ============================================ */
+
+.dashboard {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px var(--shadow);
+}
+
+.dashboard-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.dashboard-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  color: var(--text);
+}
+
+.dashboard-title i {
+  color: var(--accent);
+}
+
+.dashboard-subtitle {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-card {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.dashboard-card--streak .dashboard-card__icon {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+}
+
+.dashboard-card--streak.has-streak .dashboard-card__icon {
+  animation: pulse 2s infinite;
+}
+
+.dashboard-card--activities .dashboard-card__icon {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.dashboard-card--achievements .dashboard-card__icon {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+}
+
+.dashboard-card__content {
+  flex: 1;
+}
+
+.dashboard-card__value {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+
+.dashboard-card__label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.dashboard-card__badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.dashboard-card__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--border-light);
+}
+
+.dashboard-card__progress::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: var(--progress, 0%);
+  background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+  transition: width 0.5s ease;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.dashboard-section__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  color: var(--text);
+}
+
+.dashboard-section__title i {
+  color: var(--accent);
+}
+
+/* Weekly Chart */
+.weekly-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem;
+  height: 120px;
+  padding: 0.5rem 0;
+}
+
+.weekly-chart__day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.weekly-chart__bar {
+  width: 100%;
+  max-width: 40px;
+  height: var(--height, 0%);
+  min-height: 4px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  transition: height 0.5s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+
+.weekly-chart__day.has-activity .weekly-chart__bar {
+  background: linear-gradient(180deg, #10b981, #059669);
+}
+
+.weekly-chart__value {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+}
+
+.weekly-chart__label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Achievements */
+.achievements-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.achievement-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #92400e;
+  transition: transform 0.2s ease;
+}
+
+.achievement-badge:hover {
+  transform: scale(1.05);
+}
+
+.achievement-badge__icon {
+  font-size: 1.25rem;
+}
+
+/* Mood Selector */
+.mood-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mood-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border: 2px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 70px;
+}
+
+.mood-option:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.mood-option.selected {
+  border-color: var(--success);
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+}
+
+.mood-option__icon {
+  font-size: 1.5rem;
+}
+
+.mood-option__label {
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-align: center;
+}
+
+.mood-option.selected .mood-option__label {
+  color: var(--success);
+}
+
+/* Dashboard Link */
+.dashboard-link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.dashboard-link:hover {
+  text-decoration: underline;
+}
+
+/* Dashboard Loading State */
+.dashboard-loading {
+  padding: 1rem;
+}
+
+/* Responsive Dashboard */
+@media (max-width: 640px) {
+  .dashboard {
+    padding: 1rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card {
+    padding: 1rem;
+  }
+
+  .dashboard-card__value {
+    font-size: 1.5rem;
+  }
+
+  .weekly-chart {
+    height: 100px;
+  }
+
+  .weekly-chart__bar {
+    max-width: 30px;
+  }
+
+  .mood-option {
+    min-width: 60px;
+    padding: 0.5rem;
+  }
+
+  .mood-option__icon {
+    font-size: 1.25rem;
+  }
+
+  .mood-option__label {
+    font-size: 0.5rem;
+  }
+}
+
+/* Activity Card Complete Button */
+.rotina-card {
+  position: relative;
+}
+
+.rotina-card__complete-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border-light);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.rotina-card__complete-btn:hover {
+  opacity: 1;
+  border-color: var(--success);
+  color: var(--success);
+  transform: scale(1.1);
+}
+
+.rotina-card__complete-btn.completed {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+  opacity: 1;
+}
+
+.rotina-card__complete-btn.completed:hover {
+  background: var(--error);
+  border-color: var(--error);
+}
+
+.rotina-card.completed {
+  opacity: 0.7;
+  background: linear-gradient(135deg, rgba(72, 187, 120, 0.1), rgba(72, 187, 120, 0.05));
+  border-color: var(--success);
+}
+
+.rotina-card.completed .rotina-card__title {
+  text-decoration: line-through;
+  color: var(--success);
+}
+
+/* Activity completion animation */
+@keyframes complete-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.rotina-card__complete-btn.completing {
+  animation: complete-pop 0.3s ease;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .dashboard {
+  background: var(--card-bg);
+}
+
+[data-theme="dark"] .dashboard-card {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .achievement-badge {
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.2), rgba(253, 230, 138, 0.2));
+  color: #fcd34d;
+}
+
+[data-theme="dark"] .rotina-card.completed {
+  background: linear-gradient(135deg, rgba(72, 187, 120, 0.15), rgba(72, 187, 120, 0.1));
+}
+
