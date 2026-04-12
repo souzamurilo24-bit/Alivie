@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Escolha seu momento de calma na Alivie" />
+    <title>Momento — Alivie</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  </head>
+  <body class="practice-page">
+    <!-- Simple Header -->
+    <header class="simple-header">
+      <a class="logo" href="./index.html">Alivie</a>
+      <nav class="simple-nav" id="nav-auth"></nav>
+    </header>
+
+    <main class="practice-main">
+      <!-- Vibe Picker -->
+      <section class="vibe-picker" id="vibe-picker">
+        <h1 class="vibe-title">Como você quer se sentir?</h1>
+        <p class="vibe-subtitle">Não tem certo ou errado. Apenas escolha.</p>
+        
+        <div class="vibe-grid">
+          <button class="vibe-btn vibe-calm" data-vibe="calm">
+            <span class="vibe-icon">🌊</span>
+            <span class="vibe-label">Calmo</span>
+            <span class="vibe-desc">Reduzir ansiedade</span>
+          </button>
+          
+          <button class="vibe-btn vibe-rest" data-vibe="rest">
+            <span class="vibe-icon">💤</span>
+            <span class="vibe-label">Descansado</span>
+            <span class="vibe-desc">Preparar para sono</span>
+          </button>
+          
+          <button class="vibe-btn vibe-energy" data-vibe="energy">
+            <span class="vibe-icon">⚡</span>
+            <span class="vibe-label">Energizado</span>
+            <span class="vibe-desc">Despertar vitalidade</span>
+          </button>
+          
+          <button class="vibe-btn vibe-focus" data-vibe="focus">
+            <span class="vibe-icon">🎯</span>
+            <span class="vibe-label">Centrado</span>
+            <span class="vibe-desc">Focar a mente</span>
+          </button>
+        </div>
+
+        <button class="btn btn-ghost vibe-surprise" id="btn-surprise">
+          <i class="fas fa-magic"></i>
+          Surpreenda-me
+        </button>
+      </section>
+
+      <!-- Practice Selection (hidden initially) -->
+      <section class="practice-selection" id="practice-selection" hidden>
+        <button class="btn-back" id="btn-back-vibe">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+        
+        <h2 id="practice-vibe-title">Práticas para se sentir calmo</h2>
+        
+        <div class="practice-list" id="practice-list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- Player (hidden initially) -->
+      <section class="practice-player" id="practice-player" hidden>
+        <button class="btn-back" id="btn-back-practice">
+          <i class="fas fa-arrow-left"></i>
+          Voltar
+        </button>
+
+        <div class="player-container">
+          <!-- Timer Circle -->
+          <div class="timer-container">
+            <svg class="timer-svg" viewBox="0 0 100 100">
+              <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+              <circle class="timer-progress" cx="50" cy="50" r="45" id="timer-circle"></circle>
+            </svg>
+            <div class="timer-text">
+              <span id="timer-display">3:00</span>
+              <span class="timer-label" id="timer-step">Prepare-se...</span>
+            </div>
+          </div>
+
+          <!-- Current Step Card -->
+          <div class="step-card" id="step-card">
+            <p id="step-text">Sente-se confortavelmente...</p>
+          </div>
+
+          <!-- Controls -->
+          <div class="player-controls">
+            <button class="btn-control" id="btn-pause" title="Pausar">
+              <i class="fas fa-pause"></i>
+            </button>
+            <button class="btn-control btn-stop" id="btn-stop" title="Parar">
+              <i class="fas fa-stop"></i>
+            </button>
+            <button class="btn-control" id="btn-sound" title="Som ambiente">
+              <i class="fas fa-volume-up"></i>
+            </button>
+          </div>
+
+          <!-- Progress Dots -->
+          <div class="step-dots" id="step-dots"></div>
+        </div>
+      </section>
+
+      <!-- Check-in (hidden initially) -->
+      <section class="practice-checkin" id="practice-checkin" hidden>
+        <h2>Como você se sente agora?</h2>
+        
+        <div class="mood-slider" id="mood-slider">
+          <button class="mood-btn" data-mood="terrible" title="Muito mal">😢</button>
+          <button class="mood-btn" data-mood="bad" title="Mal">😕</button>
+          <button class="mood-btn" data-mood="okay" title="Mais ou menos">😐</button>
+          <button class="mood-btn" data-mood="good" title="Bem">🙂</button>
+          <button class="mood-btn" data-mood="great" title="Ótimo">😄</button>
+        </div>
+
+        <div class="note-input">
+          <input type="text" id="practice-note" placeholder="Uma palavra sobre este momento (opcional)" maxlength="50">
+        </div>
+
+        <button class="btn btn-primary btn-large" id="btn-complete">
+          Finalizar momento
+        </button>
+      </section>
+    </main>
+
+    <script type="module" src="./firebase.js"></script>
+    <script type="module" src="./auth.js"></script>
+    <script type="module" src="./practices.js"></script>
+    <script type="module" src="./practice-player.js"></script>
+  </body>
+</html>

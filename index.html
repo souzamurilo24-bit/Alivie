@@ -3,157 +3,118 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="A Alivie é uma plataforma de auxilio, cuidados e rotina para a saúde mental e física, com um plano de ação personalizado para cada usuário." />
-    <meta property="og:title" content="Alivie">
-    <meta property="og:description" content="A Alivie é uma plataforma de auxilio, cuidados e rotina para a saúde mental e física, com um plano de ação personalizado para cada usuário.">
-    <meta property="og:image" content="https://seu-site.com/caminho-da-foto.png">
+    <meta name="description" content="Alivie: Reserve 2 minutos para você. Momentos de calma e bem-estar que alimentam seu jardim interior." />
+    <meta property="og:title" content="Alivie — Momento de Calma">
+    <meta property="og:description" content="Reserve 2 minutos para você. Momentos de calma que alimentam seu jardim interior.">
+    <meta property="og:image" content="https://souzamurilo24-bit.github.io/Alivie/garden-preview.png">
     <meta property="og:url" content="https://souzamurilo24-bit.github.io/Alivie/">
     <meta property="og:type" content="website">
-    <title>Alivie</title>
+    <title>Alivie — Momento de Calma</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="skeleton.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script type="module" src="./theme.js"></script>
-    <script type="module" src="./toast.js"></script>
-    <script type="module" src="./loading.js"></script>
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container">
-        <a class="logo" href="./index.html">Alivie</a>
-        <nav class="nav" aria-label="Principal">
-          <ul class="nav-links">
-            <li><a href="./index.html">Início</a></li>
-            <li><a href="./perfil.html">Perfil</a></li>
-            <li><a href="./minha-rotina.html">Minha Rotina</a></li>
-          </ul>
-          <div class="nav-auth" id="nav-auth"></div>
-        </nav>
-        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menu">
-          <i class="fas fa-bars"></i>
-        </button>
-      </div>
+  <body class="landing-page">
+    <!-- Simple Header -->
+    <header class="simple-header">
+      <a class="logo" href="./index.html">Alivie</a>
+      <nav class="simple-nav" id="nav-auth"></nav>
     </header>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
-    <div class="mobile-menu" id="mobile-menu">
-      <div class="mobile-menu-header">
-        <h2>Menu</h2>
-        <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Fechar menu">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="mobile-menu-content">
-        <div class="mobile-menu-section">
-          <h3>Navegação</h3>
-          <ul class="mobile-menu-links">
-            <li><a href="./index.html">Início</a></li>
-            <li><a href="./perfil.html">Perfil</a></li>
-            <li><a href="./minha-rotina.html">Minha Rotina</a></li>
-          </ul>
-        </div>
-        <div class="mobile-menu-section" id="mobile-auth-section">
-          <h3>Conta</h3>
-          <div id="mobile-nav-auth"></div>
-        </div>
-      </div>
-    </div>
-
-    <main id="inicio">
-      <div class="container container--wide">
-        <section class="hero" aria-labelledby="titulo-principal">
-          <h1 id="titulo-principal">Saúde mental e física, acessível para todos</h1>
-          <p class="lead">A Alivie é uma plataforma de auxilio, cuidados e rotina para a saúde mental e física, com um plano de ação personalizado para cada usuário.</p>
-          <p id="auth-welcome" class="auth-welcome" hidden></p>
-          <div class="formulario-entry" id="formulario-entry" hidden>
-            <button type="button" class="btn btn-primary js-open-formulario">
-              Começar Formulário
-            </button>
-          </div>
-        </section>
-      </div>
-
-      <section
-        id="sobre"
-        class="section-sobre"
-        aria-labelledby="titulo-sobre"
-      >
-        <div class="container container--wide">
-          <header class="section-sobre__head">
-            <p class="section-sobre__eyebrow">Quem é a Alivie?</p>
-            <h2 id="titulo-sobre">Sobre a Alivie</h2>
-            <p class="section-sobre__intro">
-              A Alivie é uma iniciativa de um grupo de amigos que se uniram para criar uma plataforma de auxilio e de rotina e cuidados para a saúde mental e física.
-            </p>
-          </header>
-
-          <div class="about-grid">
-            <article class="about-card">
-              <span class="about-card__icon" aria-hidden="true">◇</span>
-              <h3 class="about-card__title">Missão</h3>
-              <p class="about-card__text">
-                Facilitar o dia a dia das pessoas com ferramentas simples,
-                acessíveis e confiáveis para o bem-estar mental e físico.
-              </p>
-            </article>
-            <article class="about-card">
-              <span class="about-card__icon" aria-hidden="true">○</span>
-              <h3 class="about-card__title">Visão</h3>
-              <p class="about-card__text">
-                Ser referência em qualidade e atenção ao detalhe no que
-                construímos, para que as pessoas possam ter um dia a dia mais saudável e feliz.
-              </p> 
-            </article>
-            <article class="about-card">
-              <span class="about-card__icon" aria-hidden="true">△</span>
-              <h3 class="about-card__title">Valores</h3>
-              <p class="about-card__text">
-                Transparência, responsabilidade e melhoria contínua em cada
-                analise e melhoria.
-              </p>
-            </article>
-          </div>
-
-          <div class="about-split">
-            <div class="about-split__text">
-              <h3 class="about-split__title">Como trabalhamos</h3>
-              <p>
-                Começamos com um questionário sobre a rotina, os cuidados e os auxílios que o usuário precisa. Em seguida, criamos um plano de ação para ajudar a pessoa a alcançar seus objetivos.
-              </p>
+    <main class="landing-main">
+      <!-- Hero Section -->
+      <section class="hero-new" id="app-entry">
+        <div class="hero-content">
+          <h1 class="hero-title">Reserve 2 minutos<br>para você</h1>
+          <p class="hero-subtitle">
+            Pequenos momentos de calma que alimentam<br>
+            seu jardim interior
+          </p>
+          
+          <!-- Garden Preview (Demo) -->
+          <div class="garden-preview" id="garden-preview">
+            <div class="garden-scene">
+              <div class="garden-element stone stone-1"></div>
+              <div class="garden-element stone stone-2"></div>
+              <div class="garden-element stone stone-3"></div>
+              <div class="garden-element flower flower-1"></div>
+              <div class="garden-element flower flower-2"></div>
+              <div class="garden-element tree"></div>
+              <div class="garden-element lantern"></div>
             </div>
-            <ul class="about-checklist">
-              <li>Questionário de rotina, cuidados e auxílios</li>
-              <li>Plano de ação para ajudar a pessoa a alcançar seus objetivos</li>
-              <li>Atualizações e melhorias em todos os momentos</li>
-              <li>a plataforma é totalmente gratuita e open source</li>
-            </ul>
+            <p class="garden-caption">Seu jardim cresce com cada momento</p>
           </div>
 
-          <div class="about-cta">
-            <p class="about-cta__text">
-              Quer saber mais? Entre em contato com a gente pelo e-mail:
-              <a href="mailto:contato@alivie.com">contato@alivie.com</a>
-              ou pelo WhatsApp:
-              <a href="https://wa.me/5511999999999">+55 11 99999-9999</a>
-            </p>
-            <a class="btn btn-primary" href="#inicio">Voltar ao início</a>
+          <!-- CTA Buttons -->
+          <div class="hero-cta">
+            <a href="./pratica.html" class="btn btn-primary btn-large" id="btn-start">
+              <i class="fas fa-play"></i>
+              Começar meu momento
+            </a>
+            <a href="./jardim.html" class="btn btn-ghost btn-large" id="btn-garden">
+              <i class="fas fa-spa"></i>
+              Ver meu jardim
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works -->
+      <section class="how-it-works">
+        <div class="container">
+          <h2 class="section-title">Como funciona</h2>
+          <div class="steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-icon">🌊</div>
+              <h3>Escolha como quer se sentir</h3>
+              <p>Calmo, descansado, energizado ou centrado</p>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-icon">⏱️</div>
+              <h3>Pratique por 2-5 minutos</h3>
+              <p>Respiração, body scan, ou visualização guiada</p>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-icon">🌸</div>
+              <h3>Veja seu jardim crescer</h3>
+              <p>Cada prática deixa uma marca visual única</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section class="features-section">
+        <div class="container">
+          <div class="features">
+            <div class="feature">
+              <i class="fas fa-fire"></i>
+              <h3>Streaks que inspiram</h3>
+              <p>Veja sua consistência em um calendário visual colorido</p>
+            </div>
+            <div class="feature">
+              <i class="fas fa-brain"></i>
+              <h3>Práticas guiadas</h3>
+              <p>Sem complexidade, apenas instruções claras e calmantes</p>
+            </div>
+            <div class="feature">
+              <i class="fas fa-mountain"></i>
+              <h3>Jardim zen pessoal</h3>
+              <p>Um espaço visual que reflete sua jornada de bem-estar</p>
+            </div>
           </div>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="container">
-        <p>&copy; <span id="year"></span> Alivie</p>
-      </div>
+    <footer class="simple-footer">
+      <p>Alivie — Momentos de calma</p>
     </footer>
 
     <script type="module" src="./firebase.js"></script>
     <script type="module" src="./auth.js"></script>
-    <script type="module" src="./formulario.js"></script>
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

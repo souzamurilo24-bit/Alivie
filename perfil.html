@@ -11,11 +11,7 @@
     <meta property="og:type" content="website">
     <title>Perfil do Usuário - Alivie</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="skeleton.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script type="module" src="./theme.js"></script>
-    <script type="module" src="./toast.js"></script>
-    <script type="module" src="./loading.js"></script>
 </head>
 <body class="page-perfil">
     <header class="site-header">
@@ -24,8 +20,9 @@
         <nav class="nav" aria-label="Principal">
           <ul class="nav-links">
             <li><a href="./index.html">Início</a></li>
+            <li><a href="./jardim.html">Meu Jardim</a></li>
+            <li><a href="./pratica.html">Nova Prática</a></li>
             <li><a href="./perfil.html" aria-current="page">Perfil</a></li>
-            <li><a href="./minha-rotina.html">Minha Rotina</a></li>
           </ul>
           <div class="nav-auth" id="nav-auth"></div>
         </nav>
@@ -49,8 +46,9 @@
           <h3>Navegação</h3>
           <ul class="mobile-menu-links">
             <li><a href="./index.html">Início</a></li>
+            <li><a href="./jardim.html">Meu Jardim</a></li>
+            <li><a href="./pratica.html">Nova Prática</a></li>
             <li><a href="./perfil.html">Perfil</a></li>
-            <li><a href="./minha-rotina.html">Minha Rotina</a></li>
           </ul>
         </div>
         <div class="mobile-menu-section" id="mobile-auth-section">
@@ -60,82 +58,40 @@
       </div>
     </div>
 
-    <main class="profile-main">
-        <div class="container">
-            <h1>Bem-vindo ao seu perfil, <span id="profile-name">Carlos</span></h1>
-            <div class="profile-card">
-                <div class="avatar-section">
-                    <div class="avatar-circle">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <button class="btn btn-primary btn-change-avatar">
-                        <i class="fas fa-camera"></i> Alterar Foto de Perfil
-                    </button>
+    <main class="profile-main-simple">
+        <div class="container" style="max-width: 500px; padding: 2rem;">
+            <div class="simple-profile-card">
+                <div class="profile-avatar-large">
+                    <i class="fas fa-user"></i>
                 </div>
-
-                <div class="profile-form">
-                    <div class="form-section">
-                        <h2>Informações Pessoais</h2>
-                        <div class="form-group">
-                            <label for="full-name">
-                                <i class="fas fa-user"></i> Nome Completo
-                            </label>
-                            <input type="text" id="full-name" value="Carlos Silva" placeholder="Seu nome completo">
-                        </div>
-                        <div class="form-group">
-                            <label for="username">
-                                <i class="fas fa-at"></i> Nome de Usuário
-                            </label>
-                            <input type="text" id="username" value="@carlos_silva" placeholder="@seu_usuario">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">
-                                <i class="fas fa-envelope"></i> E-mail
-                            </label>
-                            <input type="email" id="email" value="teste123@gmail.com" placeholder="seu@email.com" readonly>
-                        </div>
+                
+                <h1 id="profile-name">Olá!</h1>
+                
+                <div class="simple-form">
+                    <div class="form-group">
+                        <label for="display-name">Seu nome</label>
+                        <input type="text" id="display-name" placeholder="Como quer ser chamado?" maxlength="20">
                     </div>
-
-                    <div class="form-section">
-                        <h2>Configurações da Rotina</h2>
-                        <div class="form-group">
-                            <label for="routine-focus">
-                                <i class="fas fa-bullseye"></i> Foco da Rotina
-                            </label>
-                            <select id="routine-focus">
-                                <option value="relaxamento" selected>Relaxamento</option>
-                                <option value="produtividade">Produtividade</option>
-                                <option value="bem-estar-fisico">Bem-estar Físico</option>
-                                <option value="sono-melhorado">Sono Melhorado</option>
-                                <option value="reducao-ansiedade">Redução de Ansiedade</option>
-                                <option value="autoconhecimento">Autoconhecimento</option>
-                                <option value="energia-vitalidade">Energia e Vitalidade</option>
-                                <option value="equilibrio-emocional">Equilíbrio Emocional</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="site-theme">
-                                <i class="fas fa-palette"></i> Tema do Site
-                            </label>
-                            <div class="theme-toggle">
-                                <span class="theme-label">Claro</span>
-                                <div class="toggle-switch">
-                                    <input type="checkbox" id="theme-toggle">
-                                    <span class="toggle-slider"></span>
-                                </div>
-                                <span class="theme-label">Escuro</span>
+                    
+                    <div class="form-group">
+                        <label>Tema</label>
+                        <div class="theme-toggle">
+                            <span class="theme-label">Claro</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="theme-toggle">
+                                <span class="toggle-slider"></span>
                             </div>
+                            <span class="theme-label">Escuro</span>
                         </div>
                     </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Salvar Alterações
-                        </button>
-                        <a href="#" class="btn btn-ghost">
-                            <i class="fas fa-times"></i> Cancelar
-                        </a>
-                    </div>
+                    
+                    <button id="btn-save" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                    
+                    <button id="btn-logout" class="btn btn-ghost" style="width: 100%; margin-top: 0.5rem; color: #e53e3e;">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
                 </div>
             </div>
         </div>
