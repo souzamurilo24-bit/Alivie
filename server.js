@@ -334,7 +334,7 @@ app.post("/api/profile", (req, res) => {
   }
 });
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(__dirname));
 
 app.listen(PORT, () => {
   console.log("Servidor em http://localhost:" + PORT);

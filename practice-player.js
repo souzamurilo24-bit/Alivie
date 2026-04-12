@@ -77,7 +77,11 @@ function initEventListeners() {
   els.btnBackVibe?.addEventListener('click', showVibePicker);
   els.btnBackPractice?.addEventListener('click', () => {
     stopPractice();
-    showPracticeSelection(currentPractice.category);
+    if (currentPractice) {
+      showPracticeSelection(currentPractice.category);
+    } else {
+      showVibePicker();
+    }
   });
   
   // Player controls
@@ -179,6 +183,8 @@ function startPractice(practiceId) {
 
 function showStep(index) {
   const els = getElements();
+  if (!currentPractice || !currentPractice.steps[index]) return;
+  
   const step = currentPractice.steps[index];
   
   els.stepText.textContent = step.text;
@@ -216,6 +222,7 @@ function startTimer() {
     els.timerCircle.style.strokeDashoffset = offset;
     
     // Check step transitions
+    if (!currentPractice) return;
     let accumulatedTime = 0;
     for (let i = 0; i < currentPractice.steps.length; i++) {
       accumulatedTime += currentPractice.steps[i].duration;
@@ -275,6 +282,11 @@ function toggleSound() {
 
 async function completePractice() {
   const els = getElements();
+  
+  if (!currentPractice) {
+    window.location.href = './jardim.html';
+    return;
+  }
   
   // Get selected mood
   const selectedMood = document.querySelector('.mood-btn.selected')?.dataset.mood || 'okay';
