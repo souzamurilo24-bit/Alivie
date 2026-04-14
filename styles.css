@@ -200,6 +200,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   font: inherit;
   font-size: 1rem;
@@ -242,15 +243,15 @@ body {
 
 .btn-ghost {
   background: transparent;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  color: #2c5282;
+  border: 1px solid #2c5282;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .btn-ghost:hover {
   color: white;
-  border-color: white;
-  background: rgba(255, 255, 255, 0.1);
+  border-color: #2c5282;
+  background: #2c5282;
   transform: translateY(-1px);
 }
 
