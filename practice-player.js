@@ -209,7 +209,16 @@ function startTimer() {
     if (isPaused) return;
     
     remainingTime--;
-    
+
+    if (remainingTime <= 0) {
+      remainingTime = 0;
+      els.timerDisplay.textContent = '0:00';
+      const circumference = 2 * Math.PI * 45;
+      els.timerCircle.style.strokeDashoffset = circumference;
+      finishPractice();
+      return;
+    }
+
     // Update display
     const minutes = Math.floor(remainingTime / 60);
     const seconds = remainingTime % 60;
@@ -230,11 +239,6 @@ function startTimer() {
         currentStep = i;
         showStep(currentStep);
       }
-    }
-    
-    // End of practice
-    if (remainingTime <= 0) {
-      finishPractice();
     }
   }, 1000);
 }
@@ -263,11 +267,16 @@ function stopPractice() {
 }
 
 function finishPractice() {
-  clearInterval(timerInterval);
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
   
   const els = getElements();
   hideAll();
-  els.practiceCheckin.hidden = false;
+  if (els.practiceCheckin) {
+    els.practiceCheckin.hidden = false;
+  }
   document.body.className = 'practice-page checkin';
 }
 
@@ -345,8 +354,8 @@ function showCelebration(result) {
 
 function hideAll() {
   const els = getElements();
-  els.vibePicker.hidden = true;
-  els.practiceSelection.hidden = true;
-  els.practicePlayer.hidden = true;
-  els.practiceCheckin.hidden = true;
+  if (els.vibePicker) els.vibePicker.hidden = true;
+  if (els.practiceSelection) els.practiceSelection.hidden = true;
+  if (els.practicePlayer) els.practicePlayer.hidden = true;
+  if (els.practiceCheckin) els.practiceCheckin.hidden = true;
 }
