@@ -4,7 +4,7 @@
  */
 
 import { db } from "./firebase.js";
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 // App State
 const App = {
@@ -25,8 +25,17 @@ const App = {
 };
 
 // Initialize App
-document.addEventListener('DOMContentLoaded', async () => {
-  await initApp();
+export const appReady = new Promise((resolve) => {
+  const init = async () => {
+    await initApp();
+    resolve();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 });
 
 async function initApp() {
@@ -95,11 +104,16 @@ async function loadUserData(uid) {
 
 function loadGuestData() {
   const saved = localStorage.getItem('alivie_guest');
-  if (saved) {
+  if (!saved) return;
+
+  try {
     const data = JSON.parse(saved);
     App.garden = data.garden || { stones: 0, flowers: 0, trees: 0, lanterns: 0 };
     App.streak = data.streak || { days: 0, longest: 0, lastPractice: null };
     App.history = data.history || [];
+  } catch (error) {
+    console.warn('Guest data corrupt, resetting state:', error);
+    localStorage.removeItem('alivie_guest');
   }
 }
 
@@ -160,6 +174,9 @@ export async function recordPractice(practice, mood, note) {
   if (App.garden.stones > 0 && App.garden.stones % 30 === 0) {
     App.garden.trees++;
   }
+  if (App.garden.stones > 0 && App.garden.stones % 50 === 0) {
+    App.garden.lanterns++;
+  }
   
   // Update streak
   const lastDate = App.streak.lastPractice;
@@ -217,6 +234,7 @@ export async function recordPractice(practice, mood, note) {
     newStone: true,
     newFlower: App.garden.stones > 0 && App.garden.stones % 7 === 0,
     newTree: App.garden.stones > 0 && App.garden.stones % 30 === 0,
+    newLantern: App.garden.stones > 0 && App.garden.stones % 50 === 0,
     streak: App.streak.days
   };
 }

@@ -3,6 +3,10 @@ import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/
 
 // Simplified Profile - Only name and theme
 document.addEventListener('DOMContentLoaded', async () => {
+  if (window.Auth?.fetchSession) {
+    await window.Auth.fetchSession();
+  }
+
   const displayNameInput = document.getElementById('display-name');
   const profileNameSpan = document.getElementById('profile-name');
   const themeToggle = document.getElementById('theme-toggle');
@@ -13,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const updateProfileName = () => {
     if (!displayNameInput || !profileNameSpan) return;
     const name = displayNameInput.value.trim();
-    profileNameSpan.textContent = name || 'Olá!';
+    profileNameSpan.textContent = name || 'OlÃ¡!';
   };
   
   if (displayNameInput) {
@@ -44,6 +48,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (err) {
       console.error('Error loading user:', err);
     }
+
+    updateProfileName();
   };
   
   // Save

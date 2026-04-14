@@ -12,7 +12,11 @@ async function fetchSession() {
     return new Promise((resolve) => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user?.email) {
-          sessionCache = { email: user.email, uid: user.uid };
+          sessionCache = {
+            email: user.email,
+            uid: user.uid,
+            name: user.displayName || user.email.split('@')[0]
+          };
         } else {
           sessionCache = null;
         }
@@ -46,8 +50,8 @@ function renderHeader(container) {
     wrap.className = "nav-auth-logged";
     const span = document.createElement("span");
     span.className = "nav-user-email";
-    span.textContent = session.email;
-    span.setAttribute("title", "Logado como " + session.email);
+    span.textContent = session.name || session.email;
+    span.setAttribute("title", "Logado como " + (session.name || session.email));
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "btn btn-ghost";

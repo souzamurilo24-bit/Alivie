@@ -132,8 +132,11 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase
   let userProfile = null;
   let formData = null;
 
-  document.addEventListener('DOMContentLoaded', function () {
-    loadUserData();
+  document.addEventListener('DOMContentLoaded', async function () {
+    if (window.Auth?.fetchSession) {
+      await window.Auth.fetchSession();
+    }
+    await loadUserData();
 
     if (btnRegenerate) {
       btnRegenerate.addEventListener('click', generateNewRoutine);

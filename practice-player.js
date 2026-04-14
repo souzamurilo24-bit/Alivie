@@ -4,7 +4,7 @@
  */
 
 import { getPracticesByCategory, getRandomPractice, getPracticeById, CATEGORIES } from "./practices.js";
-import { recordPractice } from "./app.js";
+import { recordPractice, appReady } from "./app.js";
 
 // State
 let currentPractice = null;
@@ -153,7 +153,7 @@ function showPracticeSelection(vibe) {
 
 function startPractice(practiceId) {
   const practice = getPracticeById(practiceId);
-  if (!practice) return;
+  if (!practice || !practice.steps?.length) return;
   
   currentPractice = practice;
   currentStep = 0;
@@ -162,6 +162,10 @@ function startPractice(practiceId) {
   const els = getElements();
   
   // Setup timer
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
   totalTime = practice.steps.reduce((acc, step) => acc + step.duration, 0);
   remainingTime = totalTime;
   
@@ -267,10 +271,7 @@ function stopPractice() {
 }
 
 function finishPractice() {
-  if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-  }
+  stopPractice();
   
   const els = getElements();
   hideAll();
@@ -290,6 +291,7 @@ function toggleSound() {
 }
 
 async function completePractice() {
+  await appReady;
   const els = getElements();
   
   if (!currentPractice) {
@@ -326,6 +328,9 @@ function showCelebration(result) {
   }
   if (result.newTree) {
     details.push('🌳 Nova árvore cresceu!');
+  }
+  if (result.newLantern) {
+    details.push('🏮 Uma lanterna iluminou seu jardim!');
   }
   if (result.streak > 1) {
     details.push(`🔥 ${result.streak} dias seguidos!`);

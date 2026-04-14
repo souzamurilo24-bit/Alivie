@@ -3,7 +3,7 @@
  * Renderiza o jardim zen com elementos acumulados
  */
 
-import { getAppState, getGarden, getStreak, getHistory } from "./app.js";
+import { getGarden, getStreak, getHistory, appReady } from "./app.js";
 
 // DOM Elements
 function getElements() {
@@ -25,10 +25,11 @@ function getElements() {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const els = getElements();
   if (!els.gardenSandbox) return; // Not on garden page
   
+  await appReady;
   renderGarden();
   renderStreak();
   renderCalendar();
@@ -46,8 +47,9 @@ function renderGarden() {
   els.statLanterns.textContent = garden.lanterns;
   
   // Generate garden scene
-  if (garden.stones === 0 && garden.flowers === 0 && garden.trees === 0) {
+  if (garden.stones === 0 && garden.flowers === 0 && garden.trees === 0 && garden.lanterns === 0) {
     // Empty state
+    els.gardenSandbox.classList.remove('has-elements');
     els.gardenSandbox.innerHTML = `
       <div class="garden-empty">
         <p>Seu jardim está começando...</p>
@@ -159,6 +161,8 @@ function renderStreak() {
   // Animate if active
   if (streak.days > 0) {
     els.streakBanner.classList.add('active');
+  } else {
+    els.streakBanner.classList.remove('active');
   }
 }
 
@@ -170,17 +174,22 @@ function renderCalendar() {
   const days = [];
   const today = new Date();
   
+  const historyByDate = history.reduce((map, item) => {
+    if (item && item.date) {
+      map[item.date] = item;
+    }
+    return map;
+  }, {});
+
   for (let i = 29; i >= 0; i--) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
     const dateStr = date.toISOString().split('T')[0];
-    
-    // Find practice for this day
-    const practice = history.find(h => h.date === dateStr);
+    const practice = historyByDate[dateStr];
     
     days.push({
-      date: date,
-      dateStr: dateStr,
+      date,
+      dateStr,
       category: practice?.category || null
     });
   }
