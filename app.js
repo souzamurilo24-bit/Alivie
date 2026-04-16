@@ -24,6 +24,13 @@ const App = {
   history: []
 };
 
+function getLocalDateString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 // Initialize App
 export const appReady = new Promise((resolve) => {
   const init = async () => {
@@ -80,7 +87,7 @@ async function loadUserData(uid) {
       App.streak = {
         days: data.streakDays || 0,
         longest: data.longestStreak || 0,
-        lastPractice: data.lastPracticeDate || null
+        lastPractice: data.lastPracticeDate || data.streak?.lastPractice || null
       };
       App.history = data.history || [];
     } else {
@@ -162,7 +169,7 @@ function updateLandingButtons() {
 
 // Record completed practice
 export async function recordPractice(practice, mood, note) {
-  const today = new Date().toISOString().split('T')[0];
+  const today = getLocalDateString();
   
   // Update garden
   App.garden.stones++;
@@ -182,7 +189,7 @@ export async function recordPractice(practice, mood, note) {
   const lastDate = App.streak.lastPractice;
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  const yesterdayStr = getLocalDateString(yesterday);
   
   if (lastDate === today) {
     // Already practiced today, no streak change

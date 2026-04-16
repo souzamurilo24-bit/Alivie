@@ -577,8 +577,15 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase
   }
 
   // Setup Activity Completion Tracking
+  function getLocalDateString(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   function setupActivityTracking() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateString();
     const storageKey = 'completedActivities_' + today;
 
     // Load today's completed activities from localStorage
@@ -641,7 +648,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase
   }
 
   function saveCompletedActivity(activityId) {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateString();
     const storageKey = 'completedActivities_' + today;
     const completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
@@ -652,7 +659,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase
   }
 
   function removeCompletedActivity(activityId) {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalDateString();
     const storageKey = 'completedActivities_' + today;
     const completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
 

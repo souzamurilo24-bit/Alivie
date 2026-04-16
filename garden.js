@@ -170,6 +170,13 @@ function renderCalendar() {
   const history = getHistory();
   const els = getElements();
   
+  function getLocalDateString(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  
   // Get last 30 days
   const days = [];
   const today = new Date();
@@ -184,7 +191,7 @@ function renderCalendar() {
   for (let i = 29; i >= 0; i--) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = getLocalDateString(date);
     const practice = historyByDate[dateStr];
     
     days.push({
@@ -205,7 +212,7 @@ function renderCalendar() {
   els.streakCalendar.innerHTML = days.map(day => {
     const color = day.category ? categoryColors[day.category] : '#e0e0e0';
     const hasPractice = day.category !== null;
-    const isToday = day.dateStr === today.toISOString().split('T')[0];
+    const isToday = day.dateStr === getLocalDateString(today);
     
     return `
       <div class="calendar-day ${hasPractice ? 'has-practice' : ''} ${isToday ? 'today' : ''}"
