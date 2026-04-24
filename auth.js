@@ -207,7 +207,7 @@ function initLoginPage() {
   if (!form) return;
 
   if (getSession()) {
-    window.location.href = "index.html";
+    window.location.href = "minha-rotina.html";
     return;
   }
 
@@ -228,10 +228,10 @@ function initLoginPage() {
       if (window.Toast) {
         window.Toast.success('Login realizado com sucesso!');
         setTimeout(() => {
-          window.location.href = "index.html";
+          window.location.href = "minha-rotina.html";
         }, 1000);
       } else {
-        window.location.href = "index.html";
+        window.location.href = "minha-rotina.html";
       }
     } catch (error) {
       const errorMsg = getAuthErrorMessage(error.code) || "Não foi possível entrar.";
@@ -254,7 +254,7 @@ function initSignupPage() {
   if (!form) return;
 
   if (getSession()) {
-    window.location.href = "index.html";
+    window.location.href = "minha-rotina.html";
     return;
   }
 
@@ -290,7 +290,7 @@ function initSignupPage() {
         window.Toast.success('Conta criada com sucesso! Redirecionando...');
       }
       setTimeout(() => {
-        window.location.href = "login.html?cadastro=ok";
+        window.location.href = "minha-rotina.html";
       }, 1500);
     } catch (error) {
       const errorMsg = getAuthErrorMessage(error.code) || "Não foi possível cadastrar.";

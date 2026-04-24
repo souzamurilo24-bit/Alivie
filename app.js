@@ -53,6 +53,12 @@ async function initApp() {
   
   const session = window.Auth?.getSession ? window.Auth.getSession() : null;
   
+  // If user is logged in and on index page, redirect to dashboard
+  if (session?.uid && (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('Alivie/'))) {
+    window.location.href = './minha-rotina.html';
+    return;
+  }
+  
   if (session?.uid) {
     App.user = {
       uid: session.uid,

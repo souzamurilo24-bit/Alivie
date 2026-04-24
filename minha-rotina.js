@@ -1,7 +1,8 @@
-import { db } from "./firebase.js";
+import { db, auth } from "./firebase.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
-// Minha Rotina - Versão aprimorada e determinística
+// Tasks Dashboard - Minha Rotina
 (function () {
   'use strict';
 
@@ -667,6 +668,170 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase
     if (index > -1) {
       completed.splice(index, 1);
       localStorage.setItem(storageKey, JSON.stringify(completed));
+    }
+  }
+
+  // New Dashboard Initialization
+  document.addEventListener('DOMContentLoaded', async function() {
+    // Wait for auth to be ready
+    if (window.Auth?.fetchSession) {
+      await window.Auth.fetchSession();
+    }
+
+    const session = window.Auth?.getSession ? window.Auth.getSession() : null;
+
+    // If not logged in, redirect to landing
+    if (!session?.email) {
+      window.location.href = './landing.html';
+      return;
+    }
+
+    // Initialize dashboard
+    await initNewDashboard(session);
+
+    // Show onboarding if first login
+    if (!localStorage.getItem('alivie_dashboard_seen')) {
+      showOnboarding();
+      localStorage.setItem('alivie_dashboard_seen', 'true');
+    }
+  });
+
+  async function initNewDashboard(session) {
+    try {
+      // Load user data from Firestore
+      const userRef = doc(db, 'users', session.uid);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data() || {};
+
+      // Update welcome name
+      const nameParts = (userData.name || session.name || session.email).split(' ');
+      const welcomeName = document.getElementById('welcome-name');
+      if (welcomeName) {
+        welcomeName.textContent = `Olá, ${nameParts[0]}!`;
+      }
+
+      // Get stats
+      const streakDays = userData.streakDays || 0;
+      const longestStreak = userData.longestStreak || 0;
+      const garden = userData.garden || { stones: 0, flowers: 0, trees: 0, lanterns: 0 };
+      const gardenTotal = (garden.stones || 0) + (garden.flowers || 0) + (garden.trees || 0) + (garden.lanterns || 0);
+
+      // Update stats display
+      const streakEl = document.getElementById('streak-count');
+      if (streakEl) streakEl.textContent = streakDays;
+
+      const gardenEl = document.getElementById('garden-count');
+      if (gardenEl) gardenEl.textContent = gardenTotal;
+
+      // Load today's completed tasks
+      const today = getLocalDateString();
+      const completedToday = JSON.parse(localStorage.getItem(`completedActivities_${today}`) || '[]');
+
+      // Render tasks for each period
+      renderTaskPeriod('manha', 'morning-tasks', 'morning-progress', completedToday);
+      renderTaskPeriod('tarde', 'afternoon-tasks', 'afternoon-progress', completedToday);
+      renderTaskPeriod('noite', 'evening-tasks', 'evening-progress', completedToday);
+
+      // Update "Today" stat
+      const totalTasks = 3 + 3 + 3; // 3 per period for now
+      const todayEl = document.getElementById('today-count');
+      if (todayEl) todayEl.textContent = `${completedToday.length}/${totalTasks}`;
+
+    } catch (error) {
+      console.error('Error initializing dashboard:', error);
+    }
+  }
+
+  function renderTaskPeriod(periodKey, containerId, progressId, completedToday) {
+    const container = document.getElementById(containerId);
+    const progressEl = document.getElementById(progressId);
+    if (!container) return;
+
+    const activities = activitiesDB[periodKey] || [];
+    const selected = activities.slice(0, 3); // Show 3 tasks per period
+
+    let completed = 0;
+    const html = selected.map(activity => {
+      const isCompleted = completedToday.includes(activity.id);
+      if (isCompleted) completed++;
+
+      return `
+        <div class="task-card ${isCompleted ? 'completed' : ''}" data-activity-id="${activity.id}">
+          <div class="task-icon">
+            <i class="fas ${activity.icon}"></i>
+          </div>
+          <div class="task-content">
+            <h3 class="task-title">${activity.title}</h3>
+            <span class="task-duration">${activity.duration}</span>
+            <p class="task-description">${activity.description}</p>
+          </div>
+          <button class="task-complete-btn ${isCompleted ? 'completed' : ''}" data-activity-id="${activity.id}" title="${isCompleted ? 'Desmarcar' : 'Marcar como concluída'}">
+            <i class="fas fa-check"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = html;
+
+    // Update progress
+    if (progressEl) {
+      progressEl.textContent = `${completed}/${selected.length}`;
+    }
+
+    // Add event listeners
+    container.querySelectorAll('.task-complete-btn').forEach(btn => {
+      btn.addEventListener('click', handleTaskComplete);
+    });
+  }
+
+  function handleTaskComplete(e) {
+    const btn = e.currentTarget;
+    const activityId = btn.dataset.activityId;
+    const card = btn.closest('.task-card');
+    const today = getLocalDateString();
+    const storageKey = `completedActivities_${today}`;
+    const completed = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    if (btn.classList.contains('completed')) {
+      // Unmark
+      btn.classList.remove('completed');
+      card?.classList.remove('completed');
+      const index = completed.indexOf(activityId);
+      if (index > -1) completed.splice(index, 1);
+    } else {
+      // Mark as complete
+      btn.classList.add('completed');
+      card?.classList.add('completed');
+      if (!completed.includes(activityId)) completed.push(activityId);
+      
+      if (window.Toast) {
+        window.Toast.success('Atividade concluída! 🎉');
+      }
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(completed));
+
+    // Update today count
+    const totalTasks = 9; // 3 per period
+    const todayEl = document.getElementById('today-count');
+    if (todayEl) todayEl.textContent = `${completed.length}/${totalTasks}`;
+  }
+
+  function showOnboarding() {
+    const modal = document.getElementById('onboarding-modal');
+    if (modal) {
+      modal.style.display = 'flex';
+      
+      const closeBtn = document.getElementById('close-onboarding');
+      const closeActionBtn = document.getElementById('close-onboarding-btn');
+
+      const close = () => {
+        modal.style.display = 'none';
+      };
+
+      if (closeBtn) closeBtn.addEventListener('click', close);
+      if (closeActionBtn) closeActionBtn.addEventListener('click', close);
     }
   }
 })();
