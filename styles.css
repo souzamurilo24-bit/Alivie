@@ -904,13 +904,17 @@ section p {
 }
 
 /* Profile Page Styles */
-.profile-main {
-  flex: 1;
+.page-perfil .profile-main {
+  min-height: calc(100vh - 160px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding-block: 3rem 3.5rem;
 }
 
-.profile-card {
+.page-perfil .profile-card {
   max-width: 800px;
+  width: 100%;
   margin: 0 auto;
   background: var(--card-bg);
   border-radius: 16px;

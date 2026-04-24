@@ -58,42 +58,45 @@
       </div>
     </div>
 
-    <main class="profile-main-simple">
-        <div class="container" style="max-width: 500px; padding: 2rem;">
-            <div class="simple-profile-card">
-                <div class="profile-avatar-large">
-                    <i class="fas fa-user"></i>
-                </div>
-                
-                <h1 id="profile-name">Olá!</h1>
-                
-                <div class="simple-form">
-                    <div class="form-group">
-                        <label for="display-name">Seu nome</label>
-                        <input type="text" id="display-name" placeholder="Como quer ser chamado?" maxlength="20">
+    <main class="profile-main">
+        <div class="container">
+            <article class="profile-card">
+                <section class="avatar-section">
+                    <div class="avatar-circle">
+                        <i class="fas fa-user"></i>
                     </div>
-                    
-                    <div class="form-group">
-                        <label>Tema</label>
-                        <div class="theme-toggle">
-                            <span class="theme-label">Claro</span>
-                            <div class="toggle-switch">
-                                <input type="checkbox" id="theme-toggle">
-                                <span class="toggle-slider"></span>
+                    <h1 id="profile-name">Olá!</h1>
+                </section>
+
+                <section class="profile-form">
+                    <div class="form-section">
+                        <h2>Configuração do perfil</h2>
+                        <div class="form-group">
+                            <label for="display-name">Seu nome</label>
+                            <input type="text" id="display-name" placeholder="Como quer ser chamado?" maxlength="20">
+                        </div>
+                        <div class="form-group">
+                            <label>Tema</label>
+                            <div class="theme-toggle">
+                                <span class="theme-label">Claro</span>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="theme-toggle">
+                                    <span class="toggle-slider"></span>
+                                </div>
+                                <span class="theme-label">Escuro</span>
                             </div>
-                            <span class="theme-label">Escuro</span>
                         </div>
                     </div>
-                    
-                    <button id="btn-save" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
-                        <i class="fas fa-save"></i> Salvar
-                    </button>
-                    
-                    <button id="btn-logout" class="btn btn-ghost" style="width: 100%; margin-top: 0.5rem; color: #e53e3e;">
-                        <i class="fas fa-sign-out-alt"></i> Sair
-                    </button>
-                </div>
-            </div>
+                    <div class="form-actions">
+                        <button id="btn-save" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar
+                        </button>
+                        <button id="btn-logout" class="btn btn-ghost" style="color: #e53e3e;">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    </div>
+                </section>
+            </article>
         </div>
     </main>
 

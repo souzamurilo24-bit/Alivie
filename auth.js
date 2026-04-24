@@ -171,7 +171,7 @@ function initMobileMenu() {
 
 function updateProfileLinkVisibility() {
   const session = getSession();
-  const profileLinks = document.querySelectorAll('a[href="perfil.html"]');
+  const profileLinks = document.querySelectorAll('a[href="perfil.html"], a[href="./perfil.html"]');
   
   profileLinks.forEach(link => {
     if (session?.email) {
