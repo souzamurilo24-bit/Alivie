@@ -74,6 +74,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       }
       
+      if (window.Auth?.renderHeader) {
+        const navAuth = document.getElementById('nav-auth');
+        if (navAuth) window.Auth.renderHeader(navAuth);
+        const mobileNavAuth = document.getElementById('mobile-nav-auth');
+        if (mobileNavAuth && window.Auth?.renderMobileAuth) window.Auth.renderMobileAuth();
+      }
+      
       showNotification('Salvo com sucesso!', 'success');
     });
   }

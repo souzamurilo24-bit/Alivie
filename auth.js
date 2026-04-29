@@ -1,29 +1,67 @@
-import { auth } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 let sessionCache = null;
 let sessionPromise = null;
+
+function getLocalProfileName() {
+  try {
+    const saved = localStorage.getItem('alivie_profile');
+    if (!saved) return null;
+    const data = JSON.parse(saved);
+    return data?.name ? String(data.name).trim() : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function getStoredProfileName(uid) {
+  const localName = getLocalProfileName();
+  if (localName) return localName;
+
+  if (!uid) return null;
+  try {
+    const docRef = doc(db, 'users', uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return data?.name ? String(data.name).trim() : null;
+    }
+  } catch (err) {
+    console.error('Error loading profile name:', err);
+  }
+  return null;
+}
 
 async function fetchSession() {
   if (sessionPromise) {
     return sessionPromise;
   }
   sessionPromise = (async () => {
-    return new Promise((resolve) => {
+    const user = await new Promise((resolve) => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user?.email) {
-          sessionCache = {
-            email: user.email,
-            uid: user.uid,
-            name: user.displayName || user.email.split('@')[0]
-          };
-        } else {
-          sessionCache = null;
-        }
         unsubscribe();
-        resolve(sessionCache);
+        resolve(user);
       });
     });
+
+    if (user?.email) {
+      const fallbackName = user.displayName || user.email.split('@')[0];
+      sessionCache = {
+        email: user.email,
+        uid: user.uid,
+        name: fallbackName
+      };
+      const profileName = await getStoredProfileName(user.uid);
+      if (profileName) {
+        sessionCache.name = profileName;
+      }
+    } else {
+      sessionCache = null;
+    }
+
+    return sessionCache;
   })();
   return sessionPromise;
 }
@@ -46,12 +84,13 @@ function renderHeader(container) {
   const session = getSession();
   container.innerHTML = "";
   if (session?.email) {
+    const displayName = getLocalProfileName() || session.name || session.email;
     const wrap = document.createElement("div");
     wrap.className = "nav-auth-logged";
     const span = document.createElement("span");
     span.className = "nav-user-email";
-    span.textContent = session.name || session.email;
-    span.setAttribute("title", "Logado como " + (session.name || session.email));
+    span.textContent = displayName;
+    span.setAttribute("title", "Logado como " + displayName);
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "btn btn-ghost";
@@ -86,6 +125,7 @@ function renderMobileAuth() {
   const session = getSession();
   container.innerHTML = "";
   if (session?.email) {
+    const displayName = getLocalProfileName() || session.name || session.email;
     const wrap = document.createElement("div");
     wrap.className = "nav-auth-logged";
     wrap.style.flexDirection = "column";
@@ -94,7 +134,7 @@ function renderMobileAuth() {
     
     const span = document.createElement("span");
     span.className = "nav-user-email";
-    span.textContent = session.email;
+    span.textContent = displayName;
     span.style.fontSize = "0.875rem";
     
     const btn = document.createElement("button");
@@ -333,6 +373,7 @@ window.Auth = {
   getSession,
   logout,
   renderHeader,
+  renderMobileAuth,
   auth,
 };
 
