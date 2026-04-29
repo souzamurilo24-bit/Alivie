@@ -926,17 +926,17 @@ section p {
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(74, 144, 226, 0.14);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1.5px solid rgba(74, 144, 226, 0.16);
   border-radius: 24px;
-  box-shadow: 0 24px 80px rgba(41, 56, 121, 0.08);
+  box-shadow: 0 20px 60px rgba(74, 104, 186, 0.12);
   overflow: hidden;
 }
 
 .avatar-section {
   text-align: center;
   padding: 3rem 2rem 2rem;
-  background: linear-gradient(135deg, #4A90E2, #7B68EE);
+  background: linear-gradient(135deg, #5E81F4, #8B5CF6);
   position: relative;
 }
 
@@ -944,13 +944,13 @@ section p {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 1.5rem;
-  border: 3px solid white;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
 }
 
 .avatar-circle i {
@@ -958,25 +958,17 @@ section p {
   color: white;
 }
 
-.btn-change-avatar {
-  background: var(--secondary);
+.profile-card h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 700;
   color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 25px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(74, 123, 167, 0.3);
-}
-
-.btn-change-avatar:hover {
-  background: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(74, 123, 167, 0.4);
 }
 
 .profile-form {
   padding: 2.5rem 3rem 3rem;
+  background: rgba(248, 250, 252, 0.95);
+  border-top: 1.5px solid rgba(74, 144, 226, 0.12);
 }
 
 .form-section {
@@ -2767,10 +2759,10 @@ body.practice-page.playing header.site-header {
 }
 
 .hero-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(2.125rem, 5.5vw, 3.75rem);
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
   background: linear-gradient(135deg, #4A90E2, #7B68EE);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -2778,7 +2770,7 @@ body.practice-page.playing header.site-header {
 }
 
 .hero-subtitle {
-  font-size: 1.125rem;
+  font-size: 1.3rem;
   color: var(--text-secondary, #666);
   margin-bottom: 2rem;
   line-height: 1.6;
@@ -4087,11 +4079,16 @@ body.practice-page.playing header.site-header {
 .hero-landing {
   position: relative;
   padding-block: 6rem;
-  padding-inline: 2rem;
+  padding-left: 4rem;
+  padding-right: 2rem;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 3rem;
+}
+
+.hero-content {
+  padding-right: 2rem;
 }
 
 .hero-decoration {
@@ -4157,32 +4154,48 @@ body.practice-page.playing header.site-header {
   text-align: center;
   padding: 3rem;
   background: linear-gradient(135deg, #4A90E2, #7B68EE);
-  border-radius: 24px;
+  border-radius: 28px;
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 30px 70px rgba(74, 104, 186, 0.18);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 40px 80px rgba(94, 129, 244, 0.2);
 }
 
 .cta-box h2 {
   margin: 0 0 1rem;
   font-size: clamp(1.75rem, 2.5vw, 2.5rem);
+  font-weight: 700;
 }
 
 .cta-box p {
   margin: 0 auto 2rem;
-  font-size: 1.1rem;
+  font-size: 1.125rem;
   max-width: 42rem;
-  opacity: 0.95;
+  opacity: 0.98;
+  font-weight: 500;
 }
 
 .cta-box .btn-ghost {
   color: white;
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.4);
   box-shadow: none;
+  background: transparent;
 }
 
 .cta-box .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.cta-box .btn-primary {
+  background: white;
+  color: #5E81F4;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.cta-box .btn-primary:hover {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
 .cta-buttons {

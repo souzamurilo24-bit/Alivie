@@ -9,11 +9,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   </head>
   <body class="practice-page">
-    <!-- Simple Header -->
-    <header class="simple-header">
-      <a class="logo" href="./index.html">Alivie</a>
-      <nav class="simple-nav" id="nav-auth"></nav>
+    <header class="site-header">
+      <div class="container">
+        <a class="logo" href="./index.html">Alivie</a>
+        <nav class="nav" aria-label="Principal">
+          <ul class="nav-links">
+            <li><a href="./minha-rotina.html">Tarefas</a></li>
+            <li><a href="./jardim.html">Meu Jardim</a></li>
+            <li><a href="./pratica.html" aria-current="page">Praticar</a></li>
+            <li><a href="./perfil.html">Perfil</a></li>
+          </ul>
+          <div class="nav-auth" id="nav-auth"></div>
+        </nav>
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menu">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
     </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+    <div class="mobile-menu" id="mobile-menu">
+      <div class="mobile-menu-header">
+        <h2>Menu</h2>
+        <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Fechar menu">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="mobile-menu-content">
+        <div class="mobile-menu-section">
+          <h3>Navegação</h3>
+          <ul class="mobile-menu-links">
+            <li><a href="./minha-rotina.html">Tarefas</a></li>
+            <li><a href="./jardim.html">Meu Jardim</a></li>
+            <li><a href="./pratica.html">Praticar</a></li>
+            <li><a href="./perfil.html">Perfil</a></li>
+          </ul>
+        </div>
+        <div class="mobile-menu-section" id="mobile-auth-section">
+          <h3>Conta</h3>
+          <div id="mobile-nav-auth"></div>
+        </div>
+      </div>
+    </div>
 
     <main class="practice-main">
       <!-- Vibe Picker -->
