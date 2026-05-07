@@ -55,6 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initEventListeners();
 });
 
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+  stopPractice();
+});
+
 function initEventListeners() {
   const els = getElements();
   
@@ -209,8 +214,14 @@ function showStep(index) {
 function startTimer() {
   const els = getElements();
   
+  // Ensure any existing interval is cleared
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  
   timerInterval = setInterval(() => {
-    if (isPaused) return;
+    if (!currentPractice || isPaused) return;
     
     remainingTime--;
 
@@ -264,10 +275,15 @@ function togglePause() {
 }
 
 function stopPractice() {
-  clearInterval(timerInterval);
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
   currentPractice = null;
   currentStep = 0;
   isPaused = false;
+  remainingTime = 0;
+  totalTime = 0;
 }
 
 function finishPractice() {

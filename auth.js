@@ -22,14 +22,21 @@ async function getStoredProfileName(uid) {
 
   if (!uid) return null;
   try {
+    // Create a timeout promise
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Request timeout')), 5000)
+    );
+    
     const docRef = doc(db, 'users', uid);
-    const docSnap = await getDoc(docRef);
+    const docPromise = getDoc(docRef);
+    const docSnap = await Promise.race([docPromise, timeoutPromise]);
+    
     if (docSnap.exists()) {
       const data = docSnap.data();
       return data?.name ? String(data.name).trim() : null;
     }
   } catch (err) {
-    console.error('Error loading profile name:', err);
+    console.warn('Could not load profile name from Firestore:', err.message);
   }
   return null;
 }
@@ -39,29 +46,43 @@ async function fetchSession() {
     return sessionPromise;
   }
   sessionPromise = (async () => {
-    const user = await new Promise((resolve) => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        unsubscribe();
-        resolve(user);
+    try {
+      const user = await new Promise((resolve, reject) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          unsubscribe();
+          resolve(user);
+        }, (error) => {
+          unsubscribe();
+          reject(error);
+        });
       });
-    });
 
-    if (user?.email) {
-      const fallbackName = user.displayName || user.email.split('@')[0];
-      sessionCache = {
-        email: user.email,
-        uid: user.uid,
-        name: fallbackName
-      };
-      const profileName = await getStoredProfileName(user.uid);
-      if (profileName) {
-        sessionCache.name = profileName;
+      if (user?.email) {
+        const fallbackName = user.displayName || user.email.split('@')[0];
+        sessionCache = {
+          email: user.email,
+          uid: user.uid,
+          name: fallbackName
+        };
+        try {
+          const profileName = await getStoredProfileName(user.uid);
+          if (profileName) {
+            sessionCache.name = profileName;
+          }
+        } catch (err) {
+          console.warn('Could not load profile name, using fallback:', err);
+          // Continue with fallback name
+        }
+      } else {
+        sessionCache = null;
       }
-    } else {
-      sessionCache = null;
-    }
 
-    return sessionCache;
+      return sessionCache;
+    } catch (error) {
+      console.error('Auth state error:', error);
+      sessionCache = null;
+      return null;
+    }
   })();
   return sessionPromise;
 }
@@ -71,11 +92,21 @@ function getSession() {
 }
 
 async function logout() {
-  await signOut(auth);
-  sessionCache = null;
-  sessionPromise = null;
-  if (window.Toast) {
-    window.Toast.success('Você saiu da sua conta.');
+  try {
+    await signOut(auth);
+    sessionCache = null;
+    sessionPromise = null;
+    if (window.Toast) {
+      window.Toast.success('Você saiu da sua conta.');
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+    // Still clear session even if logout fails
+    sessionCache = null;
+    sessionPromise = null;
+    if (window.Toast) {
+      window.Toast.error('Erro ao sair. Por favor, recarregue a página.');
+    }
   }
 }
 

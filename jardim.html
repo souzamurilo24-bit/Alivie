@@ -55,8 +55,8 @@
 
     <main class="garden-main">
       <!-- Streak Banner -->
-      <div class="streak-banner" id="streak-banner">
-        <span class="streak-icon">🔥</span>
+      <div class="streak-banner" id="streak-banner" role="status" aria-label="Seu progresso atual">
+        <span class="streak-icon" aria-hidden="true">🔥</span>
         <span class="streak-text">
           <strong id="streak-count">0</strong> dias seguidos
         </span>
@@ -64,10 +64,10 @@
       </div>
 
       <!-- Garden Scene -->
-      <section class="garden-scene-container">
+      <section class="garden-scene-container" aria-label="Seu jardim de bem-estar">
         <h1 class="garden-title">Seu espaço de calma</h1>
         
-        <div class="garden-display" id="garden-display">
+        <div class="garden-display" id="garden-display" role="region" aria-label="Visualização do seu jardim">
           <!-- Populated by garden.js -->
           <div class="garden-sandbox" id="garden-sandbox">
             <p class="garden-empty">Seu jardim está começando...</p>
@@ -76,24 +76,24 @@
         </div>
 
         <!-- Garden Stats -->
-        <div class="garden-stats" id="garden-stats">
+        <div class="garden-stats" id="garden-stats" role="region" aria-label="Estatísticas do seu jardim">
           <div class="stat">
-            <span class="stat-icon">🪨</span>
+            <span class="stat-icon" aria-hidden="true">🪨</span>
             <span class="stat-value" id="stat-stones">0</span>
             <span class="stat-label">pedras</span>
           </div>
           <div class="stat">
-            <span class="stat-icon">🌸</span>
+            <span class="stat-icon" aria-hidden="true">🌸</span>
             <span class="stat-value" id="stat-flowers">0</span>
             <span class="stat-label">flores</span>
           </div>
           <div class="stat">
-            <span class="stat-icon">🌳</span>
+            <span class="stat-icon" aria-hidden="true">🌳</span>
             <span class="stat-value" id="stat-trees">0</span>
             <span class="stat-label">árvores</span>
           </div>
           <div class="stat">
-            <span class="stat-icon">🏮</span>
+            <span class="stat-icon" aria-hidden="true">🏮</span>
             <span class="stat-value" id="stat-lanterns">0</span>
             <span class="stat-label">lanternas</span>
           </div>
@@ -101,25 +101,25 @@
       </section>
 
       <!-- Calendar -->
-      <section class="calendar-section">
+      <section class="calendar-section" aria-label="Seu calendário de práticas">
         <h2>Seus momentos</h2>
         <div class="streak-calendar" id="streak-calendar">
           <!-- Populated by JS -->
         </div>
         <p class="calendar-legend">
-          <span class="legend-item"><span class="legend-dot calm"></span> Calmo</span>
-          <span class="legend-item"><span class="legend-dot rest"></span> Descansado</span>
-          <span class="legend-item"><span class="legend-dot energy"></span> Energizado</span>
-          <span class="legend-item"><span class="legend-dot focus"></span> Centrado</span>
+          <span class="legend-item"><span class="legend-dot calm" aria-hidden="true"></span> Calmo</span>
+          <span class="legend-item"><span class="legend-dot rest" aria-hidden="true"></span> Descansado</span>
+          <span class="legend-item"><span class="legend-dot energy" aria-hidden="true"></span> Energizado</span>
+          <span class="legend-item"><span class="legend-dot focus" aria-hidden="true"></span> Centrado</span>
         </p>
       </section>
 
       <!-- History -->
-      <section class="history-section">
+      <section class="history-section" aria-label="Histórico de suas práticas">
         <h2>Histórico recente</h2>
-        <div class="history-list" id="history-list">
+        <ul class="history-list" id="history-list">
           <!-- Populated by JS -->
-        </div>
+        </ul>
       </section>
 
       <!-- CTA -->

@@ -30,17 +30,26 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/12.11.0/firebas
  * ✅ Default deny - unknown collections are blocked
  */
 
-// Firebase configuration - should be loaded from environment variables in production
-// For security: NEVER commit actual API keys. Use .env file and build process to inject.
+// Firebase configuration - MUST be loaded from environment variables
+// ⚠️  CRITICAL SECURITY: NEVER hardcode API keys in source code
+// See .env.example for required variables
 const firebaseConfig = {
-  apiKey: import.meta.env?.VITE_FIREBASE_API_KEY || "AIzaSyB-5M4PBd-t3nNtp6bMkRnKT2TJDKfCC3k",
-  authDomain: import.meta.env?.VITE_FIREBASE_AUTH_DOMAIN || "alivie-project.firebaseapp.com",
-  projectId: import.meta.env?.VITE_FIREBASE_PROJECT_ID || "alivie-project",
-  storageBucket: import.meta.env?.VITE_FIREBASE_STORAGE_BUCKET || "alivie-project.firebasestorage.app",
-  messagingSenderId: import.meta.env?.VITE_FIREBASE_MESSAGING_SENDER_ID || "263866194556",
-  appId: import.meta.env?.VITE_FIREBASE_APP_ID || "1:263866194556:web:6f1e05e43ec173aa0c87f9",
-  measurementId: import.meta.env?.VITE_FIREBASE_MEASUREMENT_ID || "G-QRY40YC97E"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
+// Validate required configuration
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  throw new Error(
+    'Firebase configuration is missing. Please set environment variables in .env.local. ' +
+    'See .env.example for required variables.'
+  );
+}
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
